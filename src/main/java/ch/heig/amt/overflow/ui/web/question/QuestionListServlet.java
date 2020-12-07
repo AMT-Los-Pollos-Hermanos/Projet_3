@@ -6,7 +6,6 @@
 
 package ch.heig.amt.overflow.ui.web.question;
 
-import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.question.QuestionFacade;
 import ch.heig.amt.overflow.application.question.QuestionQuery;
 import ch.heig.amt.overflow.application.question.QuestionsDTO;
@@ -24,14 +23,8 @@ import java.io.IOException;
 public class QuestionListServlet extends HttpServlet {
 
     @Inject
-    private ServiceRegistry serviceRegistry;
     private QuestionFacade questionFacade;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        questionFacade = serviceRegistry.getQuestionFacade();
-    }
 
     // search for question
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

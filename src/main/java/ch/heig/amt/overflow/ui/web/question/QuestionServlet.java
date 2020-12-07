@@ -6,7 +6,6 @@
 
 package ch.heig.amt.overflow.ui.web.question;
 
-import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.answer.AnswerFacade;
 import ch.heig.amt.overflow.application.answer.AnswersDTO;
 import ch.heig.amt.overflow.application.comment.CommentFacade;
@@ -28,18 +27,14 @@ import java.io.IOException;
 public class QuestionServlet extends HttpServlet {
 
     @Inject
-    private ServiceRegistry serviceRegistry;
     private QuestionFacade questionFacade;
+
+    @Inject
     private AnswerFacade answerFacade;
+
+    @Inject
     private CommentFacade commentFacade;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        questionFacade = serviceRegistry.getQuestionFacade();
-        answerFacade = serviceRegistry.getAnswerFacade();
-        commentFacade = serviceRegistry.getCommentFacade();
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         QuestionId questionId = new QuestionId(request.getPathInfo().split("/")[1]);
