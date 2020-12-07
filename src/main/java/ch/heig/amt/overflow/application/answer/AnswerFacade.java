@@ -7,22 +7,24 @@
 package ch.heig.amt.overflow.application.answer;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
+import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.answer.Answer;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AnswerFacade {
 
-    private final IAnswerRepository answerRepository;
+    @Inject
+    private IAnswerRepository answerRepository;
 
-    public AnswerFacade(IAnswerRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
+    @Inject
+    private  EventFacade eventFacade;
 
     // add answer to the answerRepository throw exception if incomplete
     public void addNewAnswer(NewAnswerCommand command) {

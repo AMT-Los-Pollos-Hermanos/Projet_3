@@ -6,14 +6,15 @@
 
 package ch.heig.amt.overflow.application.vote;
 
+import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.ContentId;
-import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.UserId;
 import ch.heig.amt.overflow.domain.vote.IVoteRepository;
 import ch.heig.amt.overflow.domain.vote.Vote;
 import ch.heig.amt.overflow.domain.vote.VoteId;
 import ch.heig.amt.overflow.domain.vote.VoteStatus;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 
 public class VoteFacade {
 
-    private final IVoteRepository voteRepository;
+    @Inject
+    private IVoteRepository voteRepository;
 
-    public VoteFacade(IVoteRepository voteRepository) {
-        this.voteRepository = voteRepository;
-    }
+    @Inject
+    private EventFacade eventFacade;
 
     public void addNewVote(NewVoteCommand command) {
         if (!isVoteCancelled(command.getUserId(), command.getContentId(), command.getStatus())) {

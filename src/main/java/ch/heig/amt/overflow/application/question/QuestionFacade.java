@@ -7,11 +7,13 @@
 package ch.heig.amt.overflow.application.question;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
+import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.question.IQuestionRepository;
 import ch.heig.amt.overflow.domain.question.Question;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,11 +22,11 @@ import java.util.stream.Collectors;
 
 public class QuestionFacade {
 
-    private final IQuestionRepository questionRepository;
+    @Inject
+    private IQuestionRepository questionRepository;
 
-    public QuestionFacade(IQuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
+    @Inject
+    private EventFacade eventFacade;
 
     // add new question to the repository throw exception if incomplete
     public void addNewQuestion(NewQuestionCommand command) {
