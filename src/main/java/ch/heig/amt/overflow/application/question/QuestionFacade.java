@@ -8,16 +8,14 @@ package ch.heig.amt.overflow.application.question;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
 import ch.heig.amt.overflow.application.event.EventFacade;
+import ch.heig.amt.overflow.domain.event.Event;
 import ch.heig.amt.overflow.domain.question.IQuestionRepository;
 import ch.heig.amt.overflow.domain.question.Question;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestionFacade {
@@ -37,6 +35,14 @@ public class QuestionFacade {
                     .author(User.builder().id(command.getAuthorId()).build())
                     .build();
             questionRepository.save(submittedQuestion);
+
+            // Send event to gamification engine
+            eventFacade.sendEvent(Event.builder()
+                    .userId(submittedQuestion.getAuthor().getId())
+                    .type("question")
+                    .properties(Map.of("type", "add", "quantity", "1"))
+                    .build()
+            );
         } else {
             throw new IllegalArgumentException("Le titre et le contenu sont obligatoires");
         }

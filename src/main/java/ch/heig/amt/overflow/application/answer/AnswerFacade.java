@@ -10,12 +10,14 @@ import ch.heig.amt.overflow.application.auth.UserDTO;
 import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.answer.Answer;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
+import ch.heig.amt.overflow.domain.event.Event;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AnswerFacade {
@@ -35,6 +37,15 @@ public class AnswerFacade {
                     .questionId(command.getQuestionId())
                     .build();
             answerRepository.save(submittedAnswer);
+
+            // Send event to gamification engine
+            eventFacade.sendEvent(Event.builder()
+                    .userId(submittedAnswer.getAuthor().getId())
+                    .type("answer")
+                    .properties(Map.of("type", "add", "quantity", "1"))
+                    .build()
+            );
+
         } else {
             throw new IllegalArgumentException("Le contenu est obligatoire");
         }

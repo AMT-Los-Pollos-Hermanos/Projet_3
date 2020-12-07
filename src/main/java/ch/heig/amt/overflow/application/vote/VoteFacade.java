@@ -8,6 +8,7 @@ package ch.heig.amt.overflow.application.vote;
 
 import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.ContentId;
+import ch.heig.amt.overflow.domain.event.Event;
 import ch.heig.amt.overflow.domain.user.UserId;
 import ch.heig.amt.overflow.domain.vote.IVoteRepository;
 import ch.heig.amt.overflow.domain.vote.Vote;
@@ -17,6 +18,7 @@ import ch.heig.amt.overflow.domain.vote.VoteStatus;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,14 @@ public class VoteFacade {
                     .contentId(command.getContentId())
                     .build();
             voteRepository.save(submittedVote);
+
+            // Send event to gamification engine
+            eventFacade.sendEvent(Event.builder()
+                    .userId(submittedVote.getUserId())
+                    .type("vote")
+                    .properties(Map.of("status", submittedVote.getStatus().name(), "quantity", "1"))
+                    .build()
+            );
         }
     }
 

@@ -11,11 +11,13 @@ import ch.heig.amt.overflow.application.event.EventFacade;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.comment.Comment;
 import ch.heig.amt.overflow.domain.comment.ICommentRepository;
+import ch.heig.amt.overflow.domain.event.Event;
 import ch.heig.amt.overflow.domain.user.User;
 
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CommentFacade {
@@ -35,6 +37,14 @@ public class CommentFacade {
                     .mainContentId(command.getMainContentId())
                     .build();
             commentRepository.save(submittedComment);
+
+            // Send event to gamification engine
+            eventFacade.sendEvent(Event.builder()
+                    .userId(submittedComment.getAuthor().getId())
+                    .type("comment")
+                    .properties(Map.of("type", "add", "quantity", "1"))
+                    .build()
+            );
         } else {
             throw new IllegalArgumentException("Le contenu est obligatoire");
         }
