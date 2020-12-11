@@ -14,7 +14,7 @@ public class EventDTO implements Serializable {
 
     private UserId userId;
 
-    private Date timestamp;
+    private Date timestamp; // TODO needed ?
 
     private String type;
 
