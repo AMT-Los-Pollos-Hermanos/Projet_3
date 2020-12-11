@@ -7,10 +7,10 @@
 package ch.heig.amt.overflow.application.answer;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.event.EventFacade;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.answer.Answer;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
-import ch.heig.amt.overflow.domain.event.Event;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
@@ -26,7 +26,7 @@ public class AnswerFacade {
     private IAnswerRepository answerRepository;
 
     @Inject
-    private  EventFacade eventFacade;
+    private GamificationFacade gamificationFacade;
 
     // add answer to the answerRepository throw exception if incomplete
     public void addNewAnswer(NewAnswerCommand command) {
@@ -39,7 +39,7 @@ public class AnswerFacade {
             answerRepository.save(submittedAnswer);
 
             // Send event to gamification engine
-            eventFacade.sendEvent(Event.builder()
+            gamificationFacade.sendEvent(EventDTO.builder()
                     .userId(submittedAnswer.getAuthor().getId())
                     .type("answer")
                     .properties(Map.of("type", "add", "quantity", "1"))

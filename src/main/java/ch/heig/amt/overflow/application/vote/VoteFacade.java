@@ -6,9 +6,9 @@
 
 package ch.heig.amt.overflow.application.vote;
 
-import ch.heig.amt.overflow.application.event.EventFacade;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.ContentId;
-import ch.heig.amt.overflow.domain.event.Event;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.user.UserId;
 import ch.heig.amt.overflow.domain.vote.IVoteRepository;
 import ch.heig.amt.overflow.domain.vote.Vote;
@@ -28,7 +28,7 @@ public class VoteFacade {
     private IVoteRepository voteRepository;
 
     @Inject
-    private EventFacade eventFacade;
+    private GamificationFacade gamificationFacade;
 
     public void addNewVote(NewVoteCommand command) {
         if (!isVoteCancelled(command.getUserId(), command.getContentId(), command.getStatus())) {
@@ -40,7 +40,7 @@ public class VoteFacade {
             voteRepository.save(submittedVote);
 
             // Send event to gamification engine
-            eventFacade.sendEvent(Event.builder()
+            gamificationFacade.sendEvent(EventDTO.builder()
                     .userId(submittedVote.getUserId())
                     .type("vote")
                     .properties(Map.of("status", submittedVote.getStatus().name(), "quantity", "1"))

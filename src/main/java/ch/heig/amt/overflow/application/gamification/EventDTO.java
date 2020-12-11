@@ -1,4 +1,4 @@
-package ch.heig.amt.overflow.domain.event;
+package ch.heig.amt.overflow.application.gamification;
 
 import ch.heig.amt.overflow.domain.user.UserId;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Data
 @Builder(toBuilder = true)
-public class Event implements Serializable {
+public class EventDTO implements Serializable {
 
     private UserId userId;
 

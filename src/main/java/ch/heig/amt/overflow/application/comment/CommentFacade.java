@@ -7,11 +7,11 @@
 package ch.heig.amt.overflow.application.comment;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.event.EventFacade;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.comment.Comment;
 import ch.heig.amt.overflow.domain.comment.ICommentRepository;
-import ch.heig.amt.overflow.domain.event.Event;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.user.User;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class CommentFacade {
     private ICommentRepository commentRepository;
 
     @Inject
-    private  EventFacade eventFacade;
+    private GamificationFacade gamificationFacade;
 
     // add comment to the repository throw exception if incomplete
     public void addNewComment(NewCommentCommand command) {
@@ -39,7 +39,7 @@ public class CommentFacade {
             commentRepository.save(submittedComment);
 
             // Send event to gamification engine
-            eventFacade.sendEvent(Event.builder()
+            gamificationFacade.sendEvent(EventDTO.builder()
                     .userId(submittedComment.getAuthor().getId())
                     .type("comment")
                     .properties(Map.of("type", "add", "quantity", "1"))

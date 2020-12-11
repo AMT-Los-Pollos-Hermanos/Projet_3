@@ -7,8 +7,8 @@
 package ch.heig.amt.overflow.application.question;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.event.EventFacade;
-import ch.heig.amt.overflow.domain.event.Event;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.question.IQuestionRepository;
 import ch.heig.amt.overflow.domain.question.Question;
 import ch.heig.amt.overflow.domain.question.QuestionId;
@@ -24,7 +24,7 @@ public class QuestionFacade {
     private IQuestionRepository questionRepository;
 
     @Inject
-    private EventFacade eventFacade;
+    private GamificationFacade gamificationFacade;
 
     // add new question to the repository throw exception if incomplete
     public void addNewQuestion(NewQuestionCommand command) {
@@ -37,7 +37,7 @@ public class QuestionFacade {
             questionRepository.save(submittedQuestion);
 
             // Send event to gamification engine
-            eventFacade.sendEvent(Event.builder()
+            gamificationFacade.sendEvent(EventDTO.builder()
                     .userId(submittedQuestion.getAuthor().getId())
                     .type("question")
                     .properties(Map.of("type", "add", "quantity", "1"))
