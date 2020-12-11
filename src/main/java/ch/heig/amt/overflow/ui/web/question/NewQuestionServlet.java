@@ -6,9 +6,9 @@
 
 package ch.heig.amt.overflow.ui.web.question;
 
-import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.UserDTO;
 import ch.heig.amt.overflow.application.question.NewQuestionCommand;
+import ch.heig.amt.overflow.application.question.QuestionFacade;
 import ch.heig.amt.overflow.domain.message.FlashMessage;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class NewQuestionServlet extends HttpServlet {
 
     @Inject
-    ServiceRegistry serviceRegistry;
+    QuestionFacade questionFacade;
 
     // add new question to the question facade
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class NewQuestionServlet extends HttpServlet {
                 .build();
 
         try {
-            serviceRegistry.getQuestionFacade().addNewQuestion(command);
+            questionFacade.addNewQuestion(command);
             request.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Question publiée avec succès")
                     .build());

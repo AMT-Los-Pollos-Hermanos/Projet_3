@@ -7,22 +7,26 @@
 package ch.heig.amt.overflow.application.answer;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.answer.Answer;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AnswerFacade {
 
-    private final IAnswerRepository answerRepository;
+    @Inject
+    private IAnswerRepository answerRepository;
 
-    public AnswerFacade(IAnswerRepository answerRepository) {
-        this.answerRepository = answerRepository;
-    }
+    @Inject
+    private GamificationFacade gamificationFacade;
 
     // add answer to the answerRepository throw exception if incomplete
     public void addNewAnswer(NewAnswerCommand command) {
@@ -33,6 +37,15 @@ public class AnswerFacade {
                     .questionId(command.getQuestionId())
                     .build();
             answerRepository.save(submittedAnswer);
+
+            // Send event to gamification engine
+            gamificationFacade.sendEvent(EventDTO.builder()
+                    .userId(submittedAnswer.getAuthor().getId())
+                    .type("answer")
+                    .properties(Map.of("type", "add", "quantity", "1"))
+                    .build()
+            );
+
         } else {
             throw new IllegalArgumentException("Le contenu est obligatoire");
         }

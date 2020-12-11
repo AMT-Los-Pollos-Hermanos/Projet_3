@@ -12,6 +12,7 @@ import ch.heig.amt.overflow.domain.user.UserId;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -23,6 +24,7 @@ import java.util.Optional;
 
 @ApplicationScoped
 @Named("JdbcUserRepository")
+@Default
 public class JdbcUserRepository implements IUserRepository {
 
     @Resource(lookup = "jdbc/OverflowDS")

@@ -6,26 +6,29 @@
 
 package ch.heig.amt.overflow.application.vote;
 
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.ContentId;
-import ch.heig.amt.overflow.domain.question.QuestionId;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.user.UserId;
 import ch.heig.amt.overflow.domain.vote.IVoteRepository;
 import ch.heig.amt.overflow.domain.vote.Vote;
 import ch.heig.amt.overflow.domain.vote.VoteId;
 import ch.heig.amt.overflow.domain.vote.VoteStatus;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class VoteFacade {
 
-    private final IVoteRepository voteRepository;
+    @Inject
+    private IVoteRepository voteRepository;
 
-    public VoteFacade(IVoteRepository voteRepository) {
-        this.voteRepository = voteRepository;
-    }
+    @Inject
+    private GamificationFacade gamificationFacade;
 
     public void addNewVote(NewVoteCommand command) {
         if (!isVoteCancelled(command.getUserId(), command.getContentId(), command.getStatus())) {
@@ -35,6 +38,14 @@ public class VoteFacade {
                     .contentId(command.getContentId())
                     .build();
             voteRepository.save(submittedVote);
+
+            // Send event to gamification engine
+            gamificationFacade.sendEvent(EventDTO.builder()
+                    .userId(submittedVote.getUserId())
+                    .type("vote")
+                    .properties(Map.of("status", submittedVote.getStatus().name(), "quantity", "1"))
+                    .build()
+            );
         }
     }
 

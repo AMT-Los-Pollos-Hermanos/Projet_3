@@ -7,22 +7,26 @@
 package ch.heig.amt.overflow.application.comment;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.comment.Comment;
 import ch.heig.amt.overflow.domain.comment.ICommentRepository;
+import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.user.User;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CommentFacade {
 
-    private final ICommentRepository commentRepository;
+    @Inject
+    private ICommentRepository commentRepository;
 
-    public CommentFacade(ICommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
+    @Inject
+    private GamificationFacade gamificationFacade;
 
     // add comment to the repository throw exception if incomplete
     public void addNewComment(NewCommentCommand command) {
@@ -33,6 +37,14 @@ public class CommentFacade {
                     .mainContentId(command.getMainContentId())
                     .build();
             commentRepository.save(submittedComment);
+
+            // Send event to gamification engine
+            gamificationFacade.sendEvent(EventDTO.builder()
+                    .userId(submittedComment.getAuthor().getId())
+                    .type("comment")
+                    .properties(Map.of("type", "add", "quantity", "1"))
+                    .build()
+            );
         } else {
             throw new IllegalArgumentException("Le contenu est obligatoire");
         }

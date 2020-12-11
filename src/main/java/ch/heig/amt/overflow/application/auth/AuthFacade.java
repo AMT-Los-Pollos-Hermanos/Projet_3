@@ -6,17 +6,20 @@
 
 package ch.heig.amt.overflow.application.auth;
 
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.domain.user.IUserRepository;
 import ch.heig.amt.overflow.domain.user.User;
 import ch.heig.amt.overflow.infrastructure.security.BCryptPasswordEncoder;
 
+import javax.inject.Inject;
+
 public class AuthFacade {
 
-    IUserRepository userRepository;
+    @Inject
+    private IUserRepository userRepository;
 
-    public AuthFacade(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Inject
+    private GamificationFacade gamificationFacade;
 
     // register new user in the repository, throw exception if user already there
     public void register(RegisterCommand command) throws RegistrationFailedException {
