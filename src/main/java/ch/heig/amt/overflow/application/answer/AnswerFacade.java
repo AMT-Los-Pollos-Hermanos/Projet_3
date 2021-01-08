@@ -7,14 +7,13 @@
 package ch.heig.amt.overflow.application.answer;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.gamification.GamificationFacade;
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.answer.Answer;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
 import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +22,13 @@ import java.util.stream.Collectors;
 
 public class AnswerFacade {
 
-    @Inject
-    private IAnswerRepository answerRepository;
+    private final IAnswerRepository answerRepository;
+    private final IGamificationEngine gamificationEngine;
 
-    @Inject
-    private GamificationFacade gamificationFacade;
+    public AnswerFacade(IAnswerRepository answerRepository, IGamificationEngine gamificationEngine) {
+        this.answerRepository = answerRepository;
+        this.gamificationEngine = gamificationEngine;
+    }
 
     // add answer to the answerRepository throw exception if incomplete
     public void addNewAnswer(NewAnswerCommand command) {
@@ -40,7 +41,7 @@ public class AnswerFacade {
             answerRepository.save(submittedAnswer);
 
             // Send event to gamification engine
-            gamificationFacade.sendEvent(EventDTO.builder()
+            gamificationEngine.sendEvent(EventDTO.builder()
                     .userId(UUID.fromString(submittedAnswer.getAuthor().getId().toString()))
                     .type("answer")
                     .properties(Map.of("type", "add", "quantity", "1"))

@@ -6,6 +6,7 @@
 
 package ch.heig.amt.overflow.application.auth;
 
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.user.IUserRepository;
 import ch.heig.amt.overflow.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;

@@ -6,8 +6,8 @@
 
 package ch.heig.amt.overflow.ui.web.comment;
 
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.comment.CommentFacade;
 import ch.heig.amt.overflow.application.comment.NewCommentCommand;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.message.FlashMessage;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class AddNewCommentServlet extends HttpServlet {
 
     @Inject
-    CommentFacade commentFacade;
+    ServiceRegistry registry;
 
     // add new comment to the facade from the req or throw exception
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +37,7 @@ public class AddNewCommentServlet extends HttpServlet {
                 .mainContentId(new MainContentId(id))
                 .build();
         try {
-            commentFacade.addNewComment(cmd);
+            registry.getCommentFacade().addNewComment(cmd);
         } catch (Exception e) {
             request.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Une erreur s'est produite lors de l'ajout de votre commentaire: " + e.getMessage())

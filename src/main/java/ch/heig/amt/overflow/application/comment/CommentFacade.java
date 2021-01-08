@@ -7,14 +7,13 @@
 package ch.heig.amt.overflow.application.comment;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.gamification.GamificationFacade;
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.comment.Comment;
 import ch.heig.amt.overflow.domain.comment.ICommentRepository;
 import ch.heig.amt.overflow.application.gamification.EventDTO;
 import ch.heig.amt.overflow.domain.user.User;
 
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +22,13 @@ import java.util.stream.Collectors;
 
 public class CommentFacade {
 
-    @Inject
-    private ICommentRepository commentRepository;
+    private final ICommentRepository commentRepository;
+    private final IGamificationEngine gamificationEngine;
 
-    @Inject
-    private GamificationFacade gamificationFacade;
+    public CommentFacade(ICommentRepository commentRepository, IGamificationEngine gamificationEngine) {
+        this.commentRepository = commentRepository;
+        this.gamificationEngine = gamificationEngine;
+    }
 
     // add comment to the repository throw exception if incomplete
     public void addNewComment(NewCommentCommand command) {
@@ -40,7 +41,7 @@ public class CommentFacade {
             commentRepository.save(submittedComment);
 
             // Send event to gamification engine
-            gamificationFacade.sendEvent(EventDTO.builder()
+            gamificationEngine.sendEvent(EventDTO.builder()
                     .userId(UUID.fromString(submittedComment.getAuthor().getId().toString()))
                     .type("comment")
                     .properties(Map.of("type", "add", "quantity", "1"))

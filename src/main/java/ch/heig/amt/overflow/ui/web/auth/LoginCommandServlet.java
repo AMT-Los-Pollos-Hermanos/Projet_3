@@ -7,7 +7,7 @@
 package ch.heig.amt.overflow.ui.web.auth;
 
 
-import ch.heig.amt.overflow.application.auth.AuthFacade;
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.AuthenticateCommand;
 import ch.heig.amt.overflow.application.auth.AuthenticationFailedException;
 import ch.heig.amt.overflow.application.auth.UserDTO;
@@ -27,7 +27,7 @@ import java.io.IOException;
 public class LoginCommandServlet extends HttpServlet {
 
     @Inject
-    AuthFacade authFacade;
+    ServiceRegistry serviceRegistry;
 
     @Override
     // authenticate the user with cmd throw the authFacade
@@ -41,7 +41,7 @@ public class LoginCommandServlet extends HttpServlet {
                 .build();
 
         try {
-            UserDTO userDTO = authFacade.authenticate(command);
+            UserDTO userDTO = serviceRegistry.getAuthFacade().authenticate(command);
             req.getSession().setAttribute("currentUser", userDTO);
             req.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Vous êtes maintenant connecté.")

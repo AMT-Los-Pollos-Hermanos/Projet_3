@@ -6,9 +6,9 @@
 
 package ch.heig.amt.overflow.ui.web.vote;
 
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.UserDTO;
 import ch.heig.amt.overflow.application.vote.NewVoteCommand;
-import ch.heig.amt.overflow.application.vote.VoteFacade;
 import ch.heig.amt.overflow.domain.ContentId;
 import ch.heig.amt.overflow.domain.message.FlashMessage;
 import ch.heig.amt.overflow.domain.vote.VoteStatus;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class VoteServlet extends HttpServlet {
 
     @Inject
-    VoteFacade voteFacade;
+    ServiceRegistry serviceRegistry;
 
     // set the user vote to the facade
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class VoteServlet extends HttpServlet {
 
         try {
             synchronized (this) {
-                voteFacade.addNewVote(command);
+                serviceRegistry.getVoteFacade().addNewVote(command);
             }
         } catch (Exception e) {
             request.getSession().setAttribute("flash", FlashMessage.builder()
