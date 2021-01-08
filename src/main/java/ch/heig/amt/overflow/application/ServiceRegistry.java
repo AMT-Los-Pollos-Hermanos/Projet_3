@@ -6,7 +6,6 @@
 
 package ch.heig.amt.overflow.application;
 
-
 import ch.heig.amt.overflow.application.answer.AnswerFacade;
 import ch.heig.amt.overflow.application.auth.AuthFacade;
 import ch.heig.amt.overflow.application.comment.CommentFacade;
@@ -61,7 +60,7 @@ public class ServiceRegistry {
     @PostConstruct
     private void init() {
         gamificationFacade = new GamificationFacade();
-        authFacade = new AuthFacade(userRepository, gamificationEngine);
+        authFacade = new AuthFacade(userRepository);
         questionFacade = new QuestionFacade(questionRepository, gamificationEngine);
         answerFacade = new AnswerFacade(answerRepository, gamificationEngine);
         commentFacade = new CommentFacade(commentRepository, gamificationEngine);

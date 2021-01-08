@@ -6,6 +6,7 @@
 
 package ch.heig.amt.overflow.application.question;
 
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.question.IQuestionRepository;
 import ch.heig.amt.overflow.domain.question.Question;
 import ch.heig.amt.overflow.domain.user.User;
@@ -30,11 +31,14 @@ class QuestionFacadeTest {
     @Mock
     IQuestionRepository repository;
 
+    @Mock
+    IGamificationEngine gamificationEngine;
+
     QuestionFacade facade;
 
     @BeforeEach
     void setUp() {
-        facade = new QuestionFacade(repository);
+        facade = new QuestionFacade(repository, gamificationEngine);
     }
 
     @Test

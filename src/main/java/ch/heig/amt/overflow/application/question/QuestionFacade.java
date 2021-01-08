@@ -7,24 +7,29 @@
 package ch.heig.amt.overflow.application.question;
 
 import ch.heig.amt.overflow.application.auth.UserDTO;
-import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.application.gamification.EventDTO;
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.question.IQuestionRepository;
 import ch.heig.amt.overflow.domain.question.Question;
 import ch.heig.amt.overflow.domain.question.QuestionId;
 import ch.heig.amt.overflow.domain.user.User;
 
-import javax.inject.Inject;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class QuestionFacade {
 
-    @Inject
-    private IQuestionRepository questionRepository;
+    private final IQuestionRepository questionRepository;
+    private final IGamificationEngine gamificationEngine;
 
-    @Inject
-    private GamificationFacade gamificationFacade;
+    public QuestionFacade(IQuestionRepository questionRepository, IGamificationEngine gamificationEngine) {
+        this.questionRepository = questionRepository;
+        this.gamificationEngine = gamificationEngine;
+    }
 
     // add new question to the repository throw exception if incomplete
     public void addNewQuestion(NewQuestionCommand command) {
@@ -37,7 +42,7 @@ public class QuestionFacade {
             questionRepository.save(submittedQuestion);
 
             // Send event to gamification engine
-            gamificationFacade.sendEvent(EventDTO.builder()
+            gamificationEngine.sendEvent(EventDTO.builder()
                     .userId(UUID.fromString(submittedQuestion.getAuthor().getId().toString()))
                     .type("question")
                     .properties(Map.of("type", "add", "quantity", "1"))

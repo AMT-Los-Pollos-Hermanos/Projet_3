@@ -6,6 +6,7 @@
 
 package ch.heig.amt.overflow.application.vote;
 
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.ContentId;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.user.UserId;
@@ -35,11 +36,14 @@ class VoteFacadeTest {
     @Mock
     IVoteRepository repository;
 
+    @Mock
+    IGamificationEngine gamificationEngine;
+
     VoteFacade facade;
 
     @BeforeEach
     void setUp() {
-        facade = new VoteFacade(repository);
+        facade = new VoteFacade(repository, gamificationEngine);
     }
 
     @Test

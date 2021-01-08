@@ -6,6 +6,7 @@
 
 package ch.heig.amt.overflow.application.comment;
 
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.domain.MainContentId;
 import ch.heig.amt.overflow.domain.comment.Comment;
 import ch.heig.amt.overflow.domain.comment.ICommentRepository;
@@ -31,11 +32,14 @@ class CommentFacadeTest {
     @Mock
     ICommentRepository repository;
 
+    @Mock
+    IGamificationEngine gamificationEngine;
+
     CommentFacade facade;
 
     @BeforeEach
     void setUp() {
-        facade = new CommentFacade(repository);
+        facade = new CommentFacade(repository, gamificationEngine);
     }
 
     @Test
