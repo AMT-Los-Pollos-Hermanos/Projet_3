@@ -16,7 +16,7 @@ public class GamificationFacade {
 
     // TODO conf file
     private final String API_KEY = "edb9194d-3eb3-46a5-9e12-cea9e7391f7f";
-    private final String API_ENDPOINT = "localhost:8080";
+    private final String API_ENDPOINT = "http://127.0.0.1:8080";
     private final String AUTH_HEADER_NAME = "X-API-KEY";
 
     public void sendEvent(EventDTO eventDTO) {
@@ -26,14 +26,7 @@ public class GamificationFacade {
                 .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(eventDTO)))
                 .build();
 
-        try {
-            HttpClient.newBuilder().build()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        // TODO handle response ? and exception ?
-
+        HttpClient.newBuilder().build().sendAsync(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public LeaderboardDTO getLeaderboard() throws APINotReachableException {
@@ -43,11 +36,11 @@ public class GamificationFacade {
                 .GET()
                 .build();
 
-        HttpResponse<String> response;
         try {
-            response = HttpClient.newBuilder().build()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = HttpClient.newBuilder().build()
+                        .send(request, HttpResponse.BodyHandlers.ofString());
             return new Gson().fromJson(response.body(), LeaderboardDTO.class);
+
         } catch (IOException | InterruptedException | JsonSyntaxException e) {
             throw new APINotReachableException("Impossible d'atteindre la ressource distante.");
         }
@@ -60,11 +53,11 @@ public class GamificationFacade {
                 .GET()
                 .build();
 
-        HttpResponse<String> response;
         try {
-            response = HttpClient.newBuilder().build()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = HttpClient.newBuilder().build()
+                        .send(request, HttpResponse.BodyHandlers.ofString());
             return new Gson().fromJson(response.body(), UserDTO.class);
+
         } catch (IOException | InterruptedException | JsonSyntaxException e) {
             throw new APINotReachableException("Impossible d'atteindre la ressource distante.");
         }
