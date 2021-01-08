@@ -6,7 +6,7 @@
 
 package ch.heig.amt.overflow.ui.web.auth;
 
-import ch.heig.amt.overflow.application.auth.AuthFacade;
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.ChangePasswordCommand;
 import ch.heig.amt.overflow.application.auth.ChangePasswordException;
 import ch.heig.amt.overflow.application.auth.UserDTO;
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class ChangePasswordCommandServlet extends HttpServlet {
 
     @Inject
-    AuthFacade authFacade;
+    ServiceRegistry serviceRegistry;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ChangePasswordCommand command = ChangePasswordCommand.builder()
@@ -34,7 +34,7 @@ public class ChangePasswordCommandServlet extends HttpServlet {
                 .build();
 
         try {
-            authFacade.changePassword(command);
+            serviceRegistry.getAuthFacade().changePassword(command);
             request.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Mot de passe modifié avec succès")
                     .build());

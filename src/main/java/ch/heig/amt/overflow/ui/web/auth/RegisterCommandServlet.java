@@ -6,7 +6,7 @@
 
 package ch.heig.amt.overflow.ui.web.auth;
 
-import ch.heig.amt.overflow.application.auth.AuthFacade;
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.auth.RegisterCommand;
 import ch.heig.amt.overflow.application.auth.RegistrationFailedException;
 import ch.heig.amt.overflow.domain.message.FlashMessage;
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class RegisterCommandServlet extends HttpServlet {
 
     @Inject
-    AuthFacade authFacade;
+    ServiceRegistry serviceRegistry;
 
     @Override
     // register user throw the facade from the req or throw exception
@@ -36,7 +36,7 @@ public class RegisterCommandServlet extends HttpServlet {
                 .build();
 
         try {
-            authFacade.register(command);
+            serviceRegistry.getAuthFacade().register(command);
             req.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Compte créé avec succès. Vous pouvez maintenant vous connecter.")
                     .build());

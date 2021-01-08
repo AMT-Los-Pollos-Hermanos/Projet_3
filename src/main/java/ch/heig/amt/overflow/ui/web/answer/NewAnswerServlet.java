@@ -6,7 +6,7 @@
 
 package ch.heig.amt.overflow.ui.web.answer;
 
-import ch.heig.amt.overflow.application.answer.AnswerFacade;
+import ch.heig.amt.overflow.application.ServiceRegistry;
 import ch.heig.amt.overflow.application.answer.NewAnswerCommand;
 import ch.heig.amt.overflow.application.auth.UserDTO;
 import ch.heig.amt.overflow.domain.message.FlashMessage;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class NewAnswerServlet extends HttpServlet {
 
     @Inject
-    AnswerFacade answerFacade;
+    ServiceRegistry serviceRegistry;
 
     // add new answer to the answer facade or throw exception 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,7 +40,7 @@ public class NewAnswerServlet extends HttpServlet {
                 .build();
 
         try {
-            answerFacade.addNewAnswer(command);
+            serviceRegistry.getAnswerFacade().addNewAnswer(command);
             request.getSession().setAttribute("flash", FlashMessage.builder()
                     .message("Réponse publiée avec succès")
                     .build());
