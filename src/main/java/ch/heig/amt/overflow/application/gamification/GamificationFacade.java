@@ -34,7 +34,7 @@ public class GamificationFacade {
 
     }
 
-    public void getLeaderboard() {
+    public LeaderboardDTO getLeaderboard() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_ENDPOINT + "/leaderboards"))
                 .headers(AUTH_HEADER_NAME, API_KEY)
@@ -49,9 +49,10 @@ public class GamificationFacade {
             e.printStackTrace();
         }
         // TODO handle response
+        return null;
     }
 
-    public void getUserStats(UserId userId) {
+    public UserDTO getUserStats(UserId userId) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_ENDPOINT + "/users/" + userId))
                 .headers(AUTH_HEADER_NAME, API_KEY)
@@ -66,6 +67,7 @@ public class GamificationFacade {
             e.printStackTrace();
         }
         // TODO Handle response
+        return null;
     }
 
 }

@@ -16,10 +16,7 @@ import ch.heig.amt.overflow.domain.vote.VoteId;
 import ch.heig.amt.overflow.domain.vote.VoteStatus;
 
 import javax.inject.Inject;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VoteFacade {
@@ -41,7 +38,7 @@ public class VoteFacade {
 
             // Send event to gamification engine
             gamificationFacade.sendEvent(EventDTO.builder()
-                    .userId(submittedVote.getUserId())
+                    .userId(UUID.fromString(submittedVote.getUserId().toString()))
                     .type("vote")
                     .properties(Map.of("status", submittedVote.getStatus().name(), "quantity", "1"))
                     .build()

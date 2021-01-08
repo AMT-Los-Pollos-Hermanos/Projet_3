@@ -8,11 +8,6 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class EventDTO {
-
-    private String type;
-    private Map<String, String> properties;
-
-    private UUID userId;
-
+public class LeaderboardDTO {
+    Map<UUID, Double> leaderboard;
 }

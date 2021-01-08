@@ -38,7 +38,7 @@ public class QuestionFacade {
 
             // Send event to gamification engine
             gamificationFacade.sendEvent(EventDTO.builder()
-                    .userId(submittedQuestion.getAuthor().getId())
+                    .userId(UUID.fromString(submittedQuestion.getAuthor().getId().toString()))
                     .type("question")
                     .properties(Map.of("type", "add", "quantity", "1"))
                     .build()

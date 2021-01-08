@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CommentFacade {
@@ -40,7 +41,7 @@ public class CommentFacade {
 
             // Send event to gamification engine
             gamificationFacade.sendEvent(EventDTO.builder()
-                    .userId(submittedComment.getAuthor().getId())
+                    .userId(UUID.fromString(submittedComment.getAuthor().getId().toString()))
                     .type("comment")
                     .properties(Map.of("type", "add", "quantity", "1"))
                     .build()
