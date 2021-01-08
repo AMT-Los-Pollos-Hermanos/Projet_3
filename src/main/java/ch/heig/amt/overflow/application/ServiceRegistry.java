@@ -10,6 +10,8 @@ package ch.heig.amt.overflow.application;
 import ch.heig.amt.overflow.application.answer.AnswerFacade;
 import ch.heig.amt.overflow.application.auth.AuthFacade;
 import ch.heig.amt.overflow.application.comment.CommentFacade;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
+import ch.heig.amt.overflow.application.gamification.IGamificationEngine;
 import ch.heig.amt.overflow.application.question.QuestionFacade;
 import ch.heig.amt.overflow.application.vote.VoteFacade;
 import ch.heig.amt.overflow.domain.answer.IAnswerRepository;
@@ -46,19 +48,24 @@ public class ServiceRegistry {
     @Named("JdbcVoteRepository")
     private IVoteRepository voteRepository;
 
+    @Inject
+    private IGamificationEngine gamificationEngine;
+
     private QuestionFacade questionFacade;
     private AuthFacade authFacade;
     private AnswerFacade answerFacade;
     private CommentFacade commentFacade;
     private VoteFacade voteFacade;
+    private GamificationFacade gamificationFacade;
 
     @PostConstruct
     private void init() {
-        authFacade = new AuthFacade(userRepository);
-        questionFacade = new QuestionFacade(questionRepository);
-        answerFacade = new AnswerFacade(answerRepository);
-        commentFacade = new CommentFacade(commentRepository);
-        voteFacade = new VoteFacade(voteRepository);
+        gamificationFacade = new GamificationFacade();
+        authFacade = new AuthFacade(userRepository, gamificationEngine);
+        questionFacade = new QuestionFacade(questionRepository, gamificationEngine);
+        answerFacade = new AnswerFacade(answerRepository, gamificationEngine);
+        commentFacade = new CommentFacade(commentRepository, gamificationEngine);
+        voteFacade = new VoteFacade(voteRepository, gamificationEngine);
     }
 
     public QuestionFacade getQuestionFacade() {
@@ -79,6 +86,10 @@ public class ServiceRegistry {
 
     public AuthFacade getAuthFacade() {
         return authFacade;
+    }
+
+    public GamificationFacade getGamificationFacade() {
+        return gamificationFacade;
     }
 
 }
