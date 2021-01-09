@@ -1,0 +1,42 @@
+package ch.heig.amt.overflow.ui.web.user;
+
+import ch.heig.amt.overflow.application.BusinessException;
+import ch.heig.amt.overflow.application.gamification.GamificationFacade;
+import ch.heig.amt.overflow.application.gamification.UserDTO;
+import ch.heig.amt.overflow.domain.message.FlashMessage;
+import ch.heig.amt.overflow.domain.user.UserId;
+
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet(name = "UserServlet", urlPatterns = "/users/*")
+public class UserServlet {
+
+    @Inject
+    private GamificationFacade gamificationFacade;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        UserId userId = new UserId(request.getPathInfo().split("/")[1]);
+
+        try{
+            // Get user
+            UserDTO userDTO = gamificationFacade.getUserStats(userId);
+            request.setAttribute("user", userDTO);
+
+        }catch(Exception e){
+            request.getSession().setAttribute("flash", FlashMessage.builder()
+                    .message(e.getMessage())
+                    .type("danger")
+                    .build());
+            response.sendRedirect(request.getContextPath() + "/");
+        }
+
+        request.getSession().removeAttribute("flash");
+    }
+
+}
