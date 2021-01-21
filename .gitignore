@@ -5,3 +5,7 @@ target
 *.log
 *.hprof
 yarn.lock
+src/main/webapp/assets/dist
+.parcel-cache
+.cache
+node_modules

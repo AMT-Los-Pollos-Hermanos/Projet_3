@@ -53,6 +53,8 @@ public class AuthFilter implements Filter {
                 uri.startsWith(prefix + "/leaderboard") ||
                 uri.startsWith(prefix + "/users/") ||
                 uri.startsWith(prefix + "/admin") ||
+                uri.startsWith(prefix + "/badges") ||
+                uri.startsWith(prefix + "/upload") ||
                 uri.equals(prefix + "/") ||
                 uri.equals(prefix) ||
                 uri.startsWith(prefix + "/ArquillianServletRunner") ||
