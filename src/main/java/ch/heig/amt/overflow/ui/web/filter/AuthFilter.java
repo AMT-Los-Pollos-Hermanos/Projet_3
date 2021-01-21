@@ -22,7 +22,7 @@ public class AuthFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest request = (HttpServletRequest) req;
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
 
         // access to login page has no restriction
         if (isPublicRessource(request.getRequestURI(), request.getContextPath())) {
@@ -52,6 +52,7 @@ public class AuthFilter implements Filter {
                 uri.startsWith(prefix + "/questions") ||
                 uri.startsWith(prefix + "/leaderboard") ||
                 uri.startsWith(prefix + "/users/") ||
+                uri.startsWith(prefix + "/admin") ||
                 uri.equals(prefix + "/") ||
                 uri.equals(prefix) ||
                 uri.startsWith(prefix + "/ArquillianServletRunner") ||

@@ -81,6 +81,7 @@ public class AuthFacade {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
+                .isAdmin(user.getIsAdmin())
                 .build();
     }
 

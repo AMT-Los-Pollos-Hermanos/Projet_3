@@ -23,6 +23,7 @@ public class User implements IEntity<User, UserId> {
     private String email;
     private String firstName;
     private String lastName;
+    private Boolean isAdmin;
 
     @EqualsAndHashCode.Exclude
     private String encryptedPassword;

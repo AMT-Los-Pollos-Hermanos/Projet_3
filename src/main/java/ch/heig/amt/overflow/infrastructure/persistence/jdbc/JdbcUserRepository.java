@@ -31,24 +31,14 @@ public class JdbcUserRepository implements IUserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        User user = null;
-
+        User user;
         try {
             String sqlQuery = "SELECT * FROM users WHERE username = ?";
             PreparedStatement statement = dataSource.getConnection().prepareStatement(sqlQuery);
             statement.setString(1, username);
             ResultSet rs = statement.executeQuery();
 
-            while (rs.next()) {
-                user = User.builder()
-                        .id(new UserId(rs.getString("id")))
-                        .firstName(rs.getString("first_name"))
-                        .lastName(rs.getString("last_name"))
-                        .email(rs.getString("email"))
-                        .username(rs.getString("username"))
-                        .encryptedPassword(rs.getString("password"))
-                        .build();
-            }
+            user = getUser(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Problème lié à la base de données");
@@ -75,7 +65,7 @@ public class JdbcUserRepository implements IUserRepository {
                 // Create user
                 PreparedStatement create = dataSource
                         .getConnection()
-                        .prepareStatement("INSERT INTO users (id, username, password, email, first_name, last_name) VALUES (?, ?, ?, ?, ?, ?)");
+                        .prepareStatement("INSERT INTO users (id, username, password, email, first_name, last_name, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)");
                 int i = 1;
                 create.setString(i++, entity.getId().toString());
                 create.setString(i++, entity.getUsername());
@@ -83,6 +73,7 @@ public class JdbcUserRepository implements IUserRepository {
                 create.setString(i++, entity.getEmail());
                 create.setString(i++, entity.getFirstName());
                 create.setString(i, entity.getLastName());
+                create.setBoolean(i, entity.getIsAdmin());
                 int rows = create.executeUpdate();
                 if (rows == 0) {
                     throw new RuntimeException("Erreur lors de l'ajout de l'utilisateur dans la base de données");
@@ -91,13 +82,14 @@ public class JdbcUserRepository implements IUserRepository {
                 // Update user
                 PreparedStatement create = dataSource
                         .getConnection()
-                        .prepareStatement("UPDATE users SET username = ?, password = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?");
+                        .prepareStatement("UPDATE users SET username = ?, password = ?, email = ?, first_name = ?, last_name = ?, is_admin = ? WHERE id = ?");
                 int i = 1;
                 create.setString(i++, entity.getUsername());
                 create.setString(i++, entity.getEncryptedPassword());
                 create.setString(i++, entity.getEmail());
                 create.setString(i++, entity.getFirstName());
                 create.setString(i++, entity.getLastName());
+                create.setBoolean(i++, entity.getIsAdmin());
                 create.setString(i, entity.getId().toString());
                 int rows = create.executeUpdate();
                 if (rows == 0) {
@@ -133,16 +125,7 @@ public class JdbcUserRepository implements IUserRepository {
             statement.setString(1, id.toString());
             ResultSet rs = statement.executeQuery();
 
-            while (rs.next()) {
-                user = User.builder()
-                        .id(new UserId(rs.getString("id")))
-                        .firstName(rs.getString("first_name"))
-                        .lastName(rs.getString("last_name"))
-                        .email(rs.getString("email"))
-                        .username(rs.getString("username"))
-                        .encryptedPassword(rs.getString("password"))
-                        .build();
-            }
+            user = getUser(rs);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Problème lié à la base de données");
@@ -165,14 +148,7 @@ public class JdbcUserRepository implements IUserRepository {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                users.add(User.builder()
-                        .id(new UserId(rs.getString("id")))
-                        .firstName(rs.getString("first_name"))
-                        .lastName(rs.getString("last_name"))
-                        .email(rs.getString("email"))
-                        .username(rs.getString("username"))
-                        .encryptedPassword(rs.getString("password"))
-                        .build());
+                users.add(getUser(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -180,6 +156,22 @@ public class JdbcUserRepository implements IUserRepository {
         }
 
         return users;
+    }
+
+    private User getUser(ResultSet rs) throws SQLException {
+        User user = null;
+        while (rs.next()) {
+            user = User.builder()
+                    .id(new UserId(rs.getString("id")))
+                    .firstName(rs.getString("first_name"))
+                    .lastName(rs.getString("last_name"))
+                    .email(rs.getString("email"))
+                    .username(rs.getString("username"))
+                    .encryptedPassword(rs.getString("password"))
+                    .isAdmin(rs.getBoolean("is_admin"))
+                    .build();
+        }
+        return user;
     }
 
 }
