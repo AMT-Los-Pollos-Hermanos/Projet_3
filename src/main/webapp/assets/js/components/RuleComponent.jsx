@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
+import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
 
 const RuleComponent = () => {
@@ -7,9 +8,11 @@ const RuleComponent = () => {
     const [rules, setRules] = useState([])
     const [badges, setBadges] = useState([])
     const [ps, setPs] = useState([])
+    const [modal, setModal] = useState(null)
 
     useEffect(() => {
         fetchData()
+        setModal(new bs.Modal(document.getElementById('ruleModal')))
     }, []);
 
     const fetchData = () => {
@@ -46,6 +49,10 @@ const RuleComponent = () => {
                 notyf.error('Error while deleting the rule')
             }
         })
+    }
+
+    const createRule = (e) => {
+        e.preventDefault()
     }
 
     const rulesJsx = rules.map((rule, i) => {
@@ -104,7 +111,7 @@ const RuleComponent = () => {
 
     return (
         <>
-            <h2>Rules <button className="btn btn-primary btn-sm">+</button></h2>
+            <h2>Rules <button className="btn btn-primary btn-sm" onClick={() => modal.show()}>+</button></h2>
             <table className="table">
                 <thead>
                 <tr>
@@ -118,6 +125,88 @@ const RuleComponent = () => {
                 {rulesJsx}
                 </tbody>
             </table>
+            <div className="modal fade" id="ruleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div className="modal-dialog modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">Create new rule</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
+                        </div>
+                        <div className="modal-body">
+                            <form action="" onSubmit={createRule}>
+                                <fieldset>
+                                    <legend>Conditions</legend>
+                                    <div className="mb-3">
+                                        <label className="form-label">Type</label>
+                                        <select className="form-control">
+                                            <option value="answer">Answer</option>
+                                            <option value="question">Question</option>
+                                            <option value="comment">Comment</option>
+                                            <option value="vote">Vote</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Vote direction</label>
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="radio" name="voteDirection"
+                                                   id="up" />
+                                            <label className="form-check-label" htmlFor="up">
+                                                UP
+                                            </label>
+                                        </div>
+                                        <div className="form-check">
+                                            <input className="form-check-input" type="radio" name="voteDirection"
+                                                   id="down" />
+                                            <label className="form-check-label" htmlFor="down">
+                                                DOWN
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Rewards</legend>
+                                    <div className="form-check mb-3">
+                                        <input type="checkbox" id="rewardBadge"
+                                               className="form-check-input"/><label htmlFor="rewardBadge" className="form-check-label">Reward badge ?</label>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Badge</label>
+                                        <select className="form-control">
+                                            <option value="answer">Answer</option>
+                                            <option value="question">Question</option>
+                                            <option value="comment">Comment</option>
+                                            <option value="vote">Vote</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-check mb-3">
+                                        <input type="checkbox" id="rewardPoints"
+                                               className="form-check-input"/><label htmlFor="rewardPoints" className="form-check-label">Reward points ?</label>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Pointscale</label>
+                                        <select className="form-control">
+                                            <option value="answer">Answer</option>
+                                            <option value="question">Question</option>
+                                            <option value="comment">Comment</option>
+                                            <option value="vote">Vote</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Amount</label>
+                                        <input type="number" min="1" className="form-control" />
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-primary" onClick={createRule}>Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };
