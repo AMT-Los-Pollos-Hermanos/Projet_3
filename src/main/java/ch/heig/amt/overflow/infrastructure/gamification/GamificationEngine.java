@@ -30,7 +30,8 @@ public class GamificationEngine implements IGamificationEngine {
     public void sendEvent(EventDTO eventDTO) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_ENDPOINT + "/events"))
-                .headers(AUTH_HEADER_NAME, API_KEY)
+                .header(AUTH_HEADER_NAME, API_KEY)
+                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(eventDTO)))
                 .build();
 
@@ -41,7 +42,7 @@ public class GamificationEngine implements IGamificationEngine {
     public LeaderboardDTO getLeaderboard() throws APINotReachableException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_ENDPOINT + "/leaderboard?nbUsers=10&page=0"))
-                .headers(AUTH_HEADER_NAME, API_KEY)
+                .header(AUTH_HEADER_NAME, API_KEY)
                 .GET()
                 .build();
 

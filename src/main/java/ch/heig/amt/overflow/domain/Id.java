@@ -30,6 +30,10 @@ public abstract class Id {
         this.id = id;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return id.toString();

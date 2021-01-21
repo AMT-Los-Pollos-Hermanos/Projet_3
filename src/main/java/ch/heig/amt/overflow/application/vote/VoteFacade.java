@@ -42,7 +42,7 @@ public class VoteFacade {
 
             // Send event to gamification engine
             gamificationEngine.sendEvent(EventDTO.builder()
-                    .userId(UUID.fromString(submittedVote.getUserId().toString()))
+                    .userId(submittedVote.getUserId().getId())
                     .type("vote")
                     .properties(Map.of("status", submittedVote.getStatus().name(), "quantity", "1"))
                     .build()
