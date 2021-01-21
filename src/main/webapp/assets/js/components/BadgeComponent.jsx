@@ -79,7 +79,6 @@ const BadgeComponent = () => {
             if (response.status === 204) {
                 notyf.success('Badge deleted')
                 fetchData()
-                modal.hide()
             } else {
                 notyf.error('Error while deleting the badge')
             }
