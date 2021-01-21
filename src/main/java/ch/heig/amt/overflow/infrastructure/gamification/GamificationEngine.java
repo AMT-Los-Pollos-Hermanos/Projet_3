@@ -59,18 +59,17 @@ public class GamificationEngine implements IGamificationEngine {
     @Override
     public UserDTO getUserStats(UserId userId) throws APINotReachableException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(API_ENDPOINT + "/users/" + userId))
-                .headers(AUTH_HEADER_NAME, API_KEY)
+                .uri(URI.create(API_ENDPOINT + "/users/" + userId.toString()))
+                .header(AUTH_HEADER_NAME, API_KEY)
                 .GET()
                 .build();
 
         try {
             HttpResponse<String> response = HttpClient.newBuilder().build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
-            return new Gson().fromJson(response.body(), UserDTO.class);
-
+            return new Gson().fromJson(response.body(), ch.heig.amt.overflow.application.gamification.UserDTO.class);
         } catch (IOException | InterruptedException | JsonSyntaxException e) {
-            throw new APINotReachableException("Impossible d'atteindre la ressource distante.");
+            return null;
         }
     }
 

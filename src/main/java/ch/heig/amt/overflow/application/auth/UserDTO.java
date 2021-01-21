@@ -8,9 +8,10 @@ package ch.heig.amt.overflow.application.auth;
 
 import ch.heig.amt.overflow.domain.user.UserId;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 
-@Value
+@Data
 @Builder
 public class UserDTO {
 

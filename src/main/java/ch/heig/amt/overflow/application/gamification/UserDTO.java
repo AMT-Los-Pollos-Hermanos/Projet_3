@@ -18,9 +18,13 @@ public class UserDTO {
 
     private UUID id;
 
-    private Double points;
+    private Integer points;
 
     private String username;
+
+    private String lastName;
+
+    private String firstName;
 
 //    private List<BadgeDTO> badges;
 

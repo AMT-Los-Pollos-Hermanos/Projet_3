@@ -8,7 +8,8 @@
     <div class="container">
         <h1><c:out value="${question.title}"/></h1>
         <div class="d-flex justify-content-between">
-            <div class="text-muted"><c:out value="${question.author.firstName} ${question.author.lastName}"/></div>
+            <div class="text-muted">
+                <a href="${pageContext.request.contextPath}/users/${question.author.id}"><c:out value="${question.author.firstName} ${question.author.lastName}"/></a></div>
             <div class="text-muted"><c:out value="${question.formattedCreatedAt()}"/></div>
         </div>
         <hr>
@@ -39,9 +40,12 @@
 
             <div class="d-flex justify-content-between">
                 <div>
-                    <span class="c-vote"><c:out
-                            value="${comment.nbVotes}  ${comment.content} - ${comment.author.firstName} ${comment.author.lastName}"/></span>
-                    <span class="text-muted"> <c:out value="${comment.formattedCreatedAt()}"/> </span>
+                    <span class="c-vote">
+                        <c:out value="${comment.nbVotes}  ${comment.content} - ${comment.author.firstName} ${comment.author.lastName}"/>
+                    </span>
+                    <span class="text-muted">
+                        <c:out value="${comment.formattedCreatedAt()}"/>
+                    </span>
                 </div>
                 <div class="btn-group" role="group" aria-label="Basic example">
                     <a type="button"
@@ -65,7 +69,9 @@
         <br> <br>
         <div class="container">
             <div class="d-flex justify-content-between">
-                <div class="text-muted"><c:out value="${answer.author.firstName} ${answer.author.lastName}"/></div>
+                <div class="text-muted">
+                    <a href="${pageContext.request.contextPath}/users/${answer.author.id}"><c:out value="${answer.author.firstName} ${answer.author.lastName}"/></a>
+                </div>
                 <div class="text-muted"><c:out value="${answer.formattedCreatedAt()}"/></div>
             </div>
             <br>

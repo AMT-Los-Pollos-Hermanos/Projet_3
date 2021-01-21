@@ -53,7 +53,7 @@
                             </h3>
                             <div class="d-flex justify-content-between">
                                 <div class="text-muted">
-                                    <c:out value="${question.author.firstName} ${question.author.lastName}"/>
+                                    <a href="${pageContext.request.contextPath}/users/${question.author.id}"><c:out value="${question.author.firstName} ${question.author.lastName}"/></a>
                                 </div>
                                 <small class="text-muted">
                                     <c:out value="${question.formattedCreatedAt()}"/>

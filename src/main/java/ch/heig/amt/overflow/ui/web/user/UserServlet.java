@@ -28,7 +28,8 @@ public class UserServlet extends HttpServlet {
             // Get user
             UserDTO userDTO = gamificationFacade.getUserStats(userId);
             request.setAttribute("user", userDTO);
-
+            request.getRequestDispatcher("/WEB-INF/views/user.jsp").forward(request, response);
+            request.getSession().removeAttribute("flash");
         }catch(Exception e){
             request.getSession().setAttribute("flash", FlashMessage.builder()
                     .message(e.getMessage())
@@ -37,7 +38,6 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/");
         }
 
-        request.getSession().removeAttribute("flash");
     }
 
 }

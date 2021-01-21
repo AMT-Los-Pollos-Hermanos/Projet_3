@@ -6,6 +6,7 @@
 
 package ch.heig.amt.overflow.application.gamification;
 
+import ch.heig.amt.overflow.application.BusinessException;
 import ch.heig.amt.overflow.domain.user.IUserRepository;
 import ch.heig.amt.overflow.domain.user.User;
 import ch.heig.amt.overflow.domain.user.UserId;
@@ -14,8 +15,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GamificationFacade {
@@ -38,7 +37,20 @@ public class GamificationFacade {
     }
 
     public UserDTO getUserStats(UserId userId) throws APINotReachableException {
-        return gamificationEngine.getUserStats(userId);
+        UserDTO userDTO = gamificationEngine.getUserStats(userId);
+        if(userDTO == null) {
+            userDTO = UserDTO.builder()
+                    .points(0)
+                    .build();
+        }
+        UserDTO finalUserDTO = userDTO;
+        userRepository.findById(userId).map(user -> {
+            finalUserDTO.setUsername(user.getUsername());
+            finalUserDTO.setFirstName(user.getFirstName());
+            finalUserDTO.setLastName(user.getLastName());
+            return null;
+        });
+        return finalUserDTO;
     }
 
 }
