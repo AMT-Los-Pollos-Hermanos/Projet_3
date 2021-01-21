@@ -9,12 +9,13 @@ import ch.heig.amt.overflow.domain.user.UserId;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "UserServlet", urlPatterns = "/users/*")
-public class UserServlet {
+public class UserServlet extends HttpServlet {
 
     @Inject
     private GamificationFacade gamificationFacade;

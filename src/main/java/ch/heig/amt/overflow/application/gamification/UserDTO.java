@@ -20,8 +20,10 @@ public class UserDTO {
 
     private Double points;
 
-    private List<BadgeDTO> badges;
+    private String username;
 
-    private List<UserReceivePointDTO> userReceivePointDTOs;
+//    private List<BadgeDTO> badges;
+
+//    private List<UserReceivePointDTO> userReceivePointDTOs;
 
 }
