@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import axios from "axios";
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
@@ -10,12 +10,22 @@ const RuleComponent = () => {
     const [ps, setPs] = useState([])
     const [modal, setModal] = useState(null)
 
+    const selectedBadgeId = useRef(null)
+    const selectedPointscaleId = useRef(null)
+
+    const [formData, setFormData] = useState({
+        conditionType: 'answer',
+        doRewardBadge: false,
+        doRewardPoint: false,
+        rewardPointscaleAmount: 20
+    });
+
     useEffect(() => {
         fetchData()
         setModal(new bs.Modal(document.getElementById('ruleModal')))
     }, []);
 
-    const fetchData = () => {
+    const fetchData = useCallback(() => {
         axios.get(API_URL + '/rules', {
             headers: {
                 'X-API-KEY': API_KEY
@@ -26,13 +36,38 @@ const RuleComponent = () => {
             headers: {
                 'X-API-KEY': API_KEY
             }
-        }).then(response => setBadges(response.data))
+        }).then(response => {
+            setBadges(response.data)
+            if (badges.length > 0) {
+                setFormData({
+                    ...formData,
+                    rewardBadgeId: badges[0].id
+                })
+            }
+        })
 
         axios.get(API_URL + '/pointscales', {
             headers: {
                 'X-API-KEY': API_KEY
             }
-        }).then(response => setPs(response.data))
+        }).then(response => {
+            setPs(response.data)
+            if (ps.length > 0) {
+                setFormData({
+                    ...formData,
+                    rewardPointscaleId: ps[0].id
+                })
+            }
+        })
+    }, [formData])
+
+    const handleChange = (e) => {
+        const target = e.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        setFormData({
+            ...formData,
+            [target.name]: value
+        })
     }
 
     const deleteRule = (id) => {
@@ -53,6 +88,58 @@ const RuleComponent = () => {
 
     const createRule = (e) => {
         e.preventDefault()
+        let properties
+        if (formData.conditionType === 'vote') {
+            properties = {
+                status: formData.voteDirection,
+                quantity: 1
+            }
+        } else {
+            properties = {
+                type: 'add',
+                quantity: 1
+            }
+        }
+        let then = {}
+        if (formData.doRewardBadge) {
+            then = {
+                ...then,
+                award_badge: {
+                    badge_id: selectedBadgeId.current.value
+                }
+            }
+        }
+        if (formData.doRewardPoint) {
+            then = {
+                ...then,
+                award_points: {
+                    amount: formData.rewardPointscaleAmount,
+                    point_scale_id: selectedPointscaleId.current.value
+                }
+            }
+        }
+        const payload = {
+            if: {
+                type: formData.conditionType,
+                properties
+            },
+            then
+        }
+        axios.post(API_URL + '/rules', payload, {
+            headers: {
+                'X-API-KEY': API_KEY,
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            if (res.status === 201) {
+                notyf.success('Rule created')
+                modal.hide()
+                fetchData()
+            } else {
+                notyf.error('Error while creating the rule')
+            }
+        })
+        console.log(payload)
     }
 
     const rulesJsx = rules.map((rule, i) => {
@@ -127,75 +214,92 @@ const RuleComponent = () => {
             </table>
             <div className="modal fade" id="ruleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
-                <div className="modal-dialog modal-lg">
+                <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Create new rule</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"/>
                         </div>
                         <div className="modal-body">
-                            <form action="" onSubmit={createRule}>
+                            <form onSubmit={createRule}>
                                 <fieldset>
                                     <legend>Conditions</legend>
                                     <div className="mb-3">
                                         <label className="form-label">Type</label>
-                                        <select className="form-control">
+                                        <select className="form-control" name="conditionType"
+                                                value={formData.conditionType} onChange={handleChange}>
                                             <option value="answer">Answer</option>
                                             <option value="question">Question</option>
                                             <option value="comment">Comment</option>
                                             <option value="vote">Vote</option>
                                         </select>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Vote direction</label>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="radio" name="voteDirection"
-                                                   id="up" />
-                                            <label className="form-check-label" htmlFor="up">
-                                                UP
-                                            </label>
+                                    {formData.conditionType === 'vote' && (
+                                        <div className="mb-3">
+                                            <label className="form-label">Vote direction</label>
+                                            <div className="form-check">
+                                                <input className="form-check-input" type="radio" name="voteDirection"
+                                                       id="up" value="UP" checked={formData.voteDirection === 'UP'}
+                                                       onChange={handleChange}/>
+                                                <label className="form-check-label" htmlFor="up">
+                                                    UP
+                                                </label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input className="form-check-input" type="radio" name="voteDirection"
+                                                       id="down" value="DOWN"
+                                                       checked={formData.voteDirection === 'DOWN'}
+                                                       onChange={handleChange}/>
+                                                <label className="form-check-label" htmlFor="down">
+                                                    DOWN
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div className="form-check">
-                                            <input className="form-check-input" type="radio" name="voteDirection"
-                                                   id="down" />
-                                            <label className="form-check-label" htmlFor="down">
-                                                DOWN
-                                            </label>
-                                        </div>
-                                    </div>
+                                    )}
                                 </fieldset>
                                 <fieldset>
                                     <legend>Rewards</legend>
-                                    <div className="form-check mb-3">
-                                        <input type="checkbox" id="rewardBadge"
-                                               className="form-check-input"/><label htmlFor="rewardBadge" className="form-check-label">Reward badge ?</label>
+                                    <div className="form-check form-switch mb-3">
+                                        <input type="checkbox" id="rewardBadge" name="doRewardBadge"
+                                               className="form-check-input" checked={formData.doRewardBadge}
+                                               onChange={handleChange}/><label htmlFor="rewardBadge"
+                                                                               className="form-check-label">Reward
+                                        badge ?</label>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Badge</label>
-                                        <select className="form-control">
-                                            <option value="answer">Answer</option>
-                                            <option value="question">Question</option>
-                                            <option value="comment">Comment</option>
-                                            <option value="vote">Vote</option>
-                                        </select>
+                                    {formData.doRewardBadge && (
+                                        <div className="mb-3">
+                                            <label className="form-label">Badge</label>
+                                            <select className="form-control" name="rewardBadgeId" ref={selectedBadgeId}>
+                                                {badges.map(badge => <option key={badge.id}
+                                                                             value={badge.id}>{badge.name}</option>)}
+                                            </select>
+                                        </div>
+                                    )}
+                                    <div className="form-check form-switch mb-3">
+                                        <input type="checkbox" id="rewardPoints" name="doRewardPoint"
+                                               className="form-check-input" checked={formData.doRewardPoint}
+                                               onChange={handleChange}/><label htmlFor="rewardPoints"
+                                                                               className="form-check-label">Reward
+                                        points ?</label>
                                     </div>
-                                    <div className="form-check mb-3">
-                                        <input type="checkbox" id="rewardPoints"
-                                               className="form-check-input"/><label htmlFor="rewardPoints" className="form-check-label">Reward points ?</label>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Pointscale</label>
-                                        <select className="form-control">
-                                            <option value="answer">Answer</option>
-                                            <option value="question">Question</option>
-                                            <option value="comment">Comment</option>
-                                            <option value="vote">Vote</option>
-                                        </select>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Amount</label>
-                                        <input type="number" min="1" className="form-control" />
-                                    </div>
+                                    {formData.doRewardPoint && (
+                                        <>
+                                            <div className="mb-3">
+                                                <label className="form-label">Pointscale</label>
+                                                <select className="form-control" name="rewardPointscaleId"
+                                                        ref={selectedPointscaleId}>
+                                                    {ps.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">Amount</label>
+                                                <input type="number" min="1" className="form-control"
+                                                       name="rewardPointscaleAmount"
+                                                       value={formData.rewardPointscaleAmount} onChange={handleChange}/>
+                                            </div>
+                                        </>
+                                    )}
+
                                 </fieldset>
                             </form>
                         </div>
