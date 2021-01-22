@@ -42,7 +42,7 @@ public class AnswerFacade {
 
             // Send event to gamification engine
             gamificationEngine.sendEvent(EventDTO.builder()
-                    .userId(UUID.fromString(submittedAnswer.getAuthor().getId().toString()))
+                    .userId(submittedAnswer.getAuthor().getId().getId())
                     .type("answer")
                     .properties(Map.of("type", "add", "quantity", "1"))
                     .build()

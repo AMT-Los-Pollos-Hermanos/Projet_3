@@ -18,7 +18,6 @@ public class EventDTO {
 
     private String type;
     private Map<String, String> properties;
-
     private UUID userId;
 
 }

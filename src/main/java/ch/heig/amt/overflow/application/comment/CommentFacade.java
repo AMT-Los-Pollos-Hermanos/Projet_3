@@ -42,7 +42,7 @@ public class CommentFacade {
 
             // Send event to gamification engine
             gamificationEngine.sendEvent(EventDTO.builder()
-                    .userId(UUID.fromString(submittedComment.getAuthor().getId().toString()))
+                    .userId(submittedComment.getAuthor().getId().getId())
                     .type("comment")
                     .properties(Map.of("type", "add", "quantity", "1"))
                     .build()

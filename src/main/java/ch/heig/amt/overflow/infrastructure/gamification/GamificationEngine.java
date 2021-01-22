@@ -38,16 +38,16 @@ public class GamificationEngine implements IGamificationEngine {
         return API_KEY;
     }
 
-    public String getApiEndpoint() {
-        return API_ENDPOINT;
-    }
-
     public String getApiUrl() {
         return API_URL;
     }
 
     @Override
     public void sendEvent(EventDTO eventDTO) {
+
+        String payload = new Gson().toJson(eventDTO);
+        System.out.println(payload);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_ENDPOINT + "/events"))
                 .header(AUTH_HEADER_NAME, API_KEY)
@@ -55,7 +55,10 @@ public class GamificationEngine implements IGamificationEngine {
                 .POST(HttpRequest.BodyPublishers.ofString(new Gson().toJson(eventDTO)))
                 .build();
 
-        HttpClient.newBuilder().build().sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        HttpClient.newBuilder().build().sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(stringHttpResponse -> {
+            System.out.println(stringHttpResponse.statusCode() + ": " + stringHttpResponse.body());
+            return null;
+        });
     }
 
     @Override
