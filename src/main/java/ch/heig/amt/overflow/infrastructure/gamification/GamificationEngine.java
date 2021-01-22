@@ -32,6 +32,14 @@ public class GamificationEngine implements IGamificationEngine {
         API_ENDPOINT = "http://" + apiHost + ":" + apiPort;
     }
 
+    public String getApiKey() {
+        return API_KEY;
+    }
+
+    public String getApiEndpoint() {
+        return API_ENDPOINT;
+    }
+
     @Override
     public void sendEvent(EventDTO eventDTO) {
         HttpRequest request = HttpRequest.newBuilder()

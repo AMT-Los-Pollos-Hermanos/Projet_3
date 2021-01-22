@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
-import {API_KEY, API_URL, notyf} from "../admin";
+import {notyf} from "../admin";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchPointscales} from "../store/pointscale.store";
 
@@ -11,6 +11,8 @@ const PointscaleComponent = () => {
     const dispatch = useDispatch()
     const pointscaleName = useRef(null)
     const [psModal, setPsModal] = useState(null)
+
+    const config = useSelector(s => s.config)
 
     useEffect(() => {
         setPsModal(new bs.Modal(document.getElementById('pointscaleModal')))
@@ -22,15 +24,15 @@ const PointscaleComponent = () => {
         psModal.show()
     }
 
-    const createNewPointscale = (e) => {
+    const createNewPointscale = useCallback((e) => {
         e.preventDefault()
         const name = pointscaleName.current.value
         if (name !== '') {
-            axios.post(API_URL + '/pointscales', {
+            axios.post(config.config.apiEndpoint + '/pointscales', {
                 name
             }, {
                 headers: {
-                    'X-API-KEY': API_KEY,
+                    'X-API-KEY': config.config.apiKey,
                     'Content-Type': 'application/json'
                 }
             }).then(response => {
@@ -43,12 +45,12 @@ const PointscaleComponent = () => {
                 }
             })
         }
-    }
+    }, [config])
 
-    const deletePointscale = (id) => {
-        axios.delete(API_URL + '/pointscales/' + id, {
+    const deletePointscale = useCallback((id) => {
+        axios.delete(config.config.apiEndpoint + '/pointscales/' + id, {
             headers: {
-                'X-API-KEY': API_KEY,
+                'X-API-KEY': config.config.apiKey,
                 'Content-Type': 'application/json'
             }
         }).then(response => {
@@ -60,7 +62,7 @@ const PointscaleComponent = () => {
                 notyf.error('Error while deleting the pointscale')
             }
         })
-    }
+    }, [config])
 
     return (
         <>

@@ -1,13 +1,17 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {API_KEY, API_URL} from "../admin";
+import {fetchConfig} from "./config.store";
 
 export const fetchBadges = createAsyncThunk(
     'badges/fetch',
-    async () => {
-        const response = await axios.get(API_URL + '/badges', {
+    async (_, thunkAPI) => {
+        if(!thunkAPI.getState().config.fetched) {
+            await thunkAPI.dispatch(fetchConfig())
+        }
+        const response = await axios.get(thunkAPI.getState().config.config.apiEndpoint + '/badges', {
             headers: {
-                'X-API-KEY': API_KEY
+                'X-API-KEY': thunkAPI.getState().config.config.apiKey
             }
         })
         return response.data

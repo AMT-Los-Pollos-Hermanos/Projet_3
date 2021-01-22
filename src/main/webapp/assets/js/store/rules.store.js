@@ -3,31 +3,30 @@ import axios from "axios";
 import {API_KEY, API_URL} from "../admin";
 import {fetchConfig} from "./config.store";
 
-export const fetchPointscales = createAsyncThunk(
-    'pointscales/fetch',
+export const fetchRules = createAsyncThunk(
+    'rules/fetch',
     async (_, thunkAPI) => {
         if(!thunkAPI.getState().config.fetched) {
             await thunkAPI.dispatch(fetchConfig())
         }
-        const response = await axios.get(thunkAPI.getState().config.config.apiEndpoint + '/pointscales', {
+        const response = await axios.get(thunkAPI.getState().config.config.apiEndpoint + '/rules', {
             headers: {
                 'X-API-KEY': thunkAPI.getState().config.config.apiKey
             }
         })
         return response.data
-
     }
 )
 
-const pointscaleSlide = createSlice({
-    name: 'pointscales',
+const rulesSlice = createSlice({
+    name: 'rules',
     initialState: [],
     reducers: {},
     extraReducers: {
-        [fetchPointscales.fulfilled]: (state, action) => {
+        [fetchRules.fulfilled]: (state, action) => {
             return action.payload
         }
     }
 })
 
-export default pointscaleSlide.reducer
+export default rulesSlice.reducer

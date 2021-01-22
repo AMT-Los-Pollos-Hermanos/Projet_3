@@ -13,16 +13,18 @@ import RuleComponent from "./components/RuleComponent";
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import pointscalesReducer from "./store/pointscale.store";
 import badgesReducer from "./store/badge.store";
+import configReducer from "./store/config.store";
+import rulesReducer from "./store/rules.store";
 import {Provider} from "react-redux";
-import {useInit} from "./init";
+import InitComponent from "./components/InitComponent";
 
-export const API_URL = 'http://localhost:8080'
-export const API_KEY = '88980fa7-7167-46d5-bbe7-367a204b7bd2'
 export const notyf = new Notyf()
 
 const rootReducer = combineReducers({
     pointscales: pointscalesReducer,
-    badges: badgesReducer
+    badges: badgesReducer,
+    rules: rulesReducer,
+    config: configReducer
 })
 
 export const rootStore = configureStore({
@@ -30,13 +32,10 @@ export const rootStore = configureStore({
 })
 
 function App() {
-    const initializeApp = useInit()
     return (
         <>
             <Provider store={rootStore}>
-                <div className="d-flex justify-content-end">
-                    <button className="btn btn-primary btn-lg" onClick={initializeApp}><i className="bi bi-gear"/> Initialize</button>
-                </div>
+                <InitComponent />
                 <div className="row">
                     <div className="col-sm-6">
                         <PointscaleComponent/>

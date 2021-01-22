@@ -1,15 +1,20 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import axios from "axios";
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
-import {API_KEY, API_URL, notyf} from "../admin";
-import {useSelector} from "react-redux";
+import {notyf} from "../admin";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchConfig} from "../store/config.store";
+import {fetchRules} from "../store/rules.store";
 
 const RuleComponent = () => {
 
-    const [rules, setRules] = useState([])
+    const rules = useSelector(s => s.rules)
     const badges = useSelector(s => s.badges)
     const ps = useSelector(s => s.pointscales)
+    const config = useSelector(s => s.config)
     const [modal, setModal] = useState(null)
+
+    const dispatch = useDispatch()
 
     const selectedBadgeId = useRef(null)
     const selectedPointscaleId = useRef(null)
@@ -22,48 +27,27 @@ const RuleComponent = () => {
     });
 
     useEffect(() => {
-        fetchData()
         setModal(new bs.Modal(document.getElementById('ruleModal')))
+        dispatch(fetchRules())
     }, []);
 
-    const fetchData = useCallback(() => {
-        axios.get(API_URL + '/rules', {
+    const deleteRule = useCallback((id) => {
+        axios.delete(config.config.apiEndpoint + '/rules/' + id, {
             headers: {
-                'X-API-KEY': API_KEY
-            }
-        })
-            .then(response => setRules(response.data))
-            .catch(reason => {
-                notyf.error('API unavailable')
-            })
-    }, [formData])
-
-    const handleChange = (e) => {
-        const target = e.target
-        const value = target.type === 'checkbox' ? target.checked : target.value
-        setFormData({
-            ...formData,
-            [target.name]: value
-        })
-    }
-
-    const deleteRule = (id) => {
-        axios.delete(API_URL + '/rules/' + id, {
-            headers: {
-                'X-API-KEY': API_KEY,
+                'X-API-KEY': config.config.apiKey,
                 'Content-Type': 'application/json'
             }
         }).then(response => {
             if (response.status === 204) {
                 notyf.success('Rule deleted')
-                fetchData()
+                dispatch(fetchRules())
             } else {
                 notyf.error('Error while deleting the rule')
             }
         })
-    }
+    }, [config])
 
-    const createRule = (e) => {
+    const createRule = useCallback((e) => {
         e.preventDefault()
         let properties
         if (formData.conditionType === 'vote') {
@@ -102,21 +86,29 @@ const RuleComponent = () => {
             },
             then
         }
-        axios.post(API_URL + '/rules', payload, {
+        axios.post(config.config.apiEndpoint + '/rules', payload, {
             headers: {
-                'X-API-KEY': API_KEY,
+                'X-API-KEY': config.config.apiKey,
                 'Content-Type': 'application/json'
             }
         }).then(res => {
             if (res.status === 201) {
                 notyf.success('Rule created')
                 modal.hide()
-                fetchData()
+                dispatch(fetchRules())
             } else {
                 notyf.error('Error while creating the rule')
             }
         })
-        console.log(payload)
+    }, [config])
+
+    const handleChange = (e) => {
+        const target = e.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        setFormData({
+            ...formData,
+            [target.name]: value
+        })
     }
 
     const rulesJsx = rules.map((rule, i) => {

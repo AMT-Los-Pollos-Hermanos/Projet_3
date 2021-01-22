@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
@@ -12,6 +12,7 @@ const BadgeComponent = () => {
     const badgeDescription = useRef(null)
     const badgeIcon = useRef(null)
     const [modal, setModal] = useState(null)
+    const config = useSelector(s => s.config)
 
     const dispatch = useDispatch()
 
@@ -27,7 +28,7 @@ const BadgeComponent = () => {
         modal.show()
     }
 
-    const createNewBadge = (e) => {
+    const createNewBadge = useCallback((e) => {
         e.preventDefault()
         const name = badgeName.current.value
         const description = badgeDescription.current.value
@@ -40,13 +41,13 @@ const BadgeComponent = () => {
                 }
             }).then(res => {
                 if(res.status === 200) {
-                    axios.post(API_URL + '/badges', {
+                    axios.post(config.config.apiEndpoint + '/badges', {
                         name,
                         description,
                         icon: res.data
                     }, {
                         headers: {
-                            'X-API-KEY': API_KEY,
+                            'X-API-KEY': config.config.apiKey,
                             'Content-Type': 'application/json'
                         }
                     }).then(response => {
@@ -63,12 +64,12 @@ const BadgeComponent = () => {
                 }
             })
         }
-    }
+    }, [config])
 
-    const deleteBadge = (id) => {
-        axios.delete(API_URL + '/badges/' + id, {
+    const deleteBadge = useCallback((id) => {
+        axios.delete(config.config.apiEndpoint + '/badges/' + id, {
             headers: {
-                'X-API-KEY': API_KEY,
+                'X-API-KEY': config.config.apiKey,
                 'Content-Type': 'application/json'
             }
         }).then(response => {
@@ -78,8 +79,10 @@ const BadgeComponent = () => {
             } else {
                 notyf.error('Error while deleting the badge')
             }
+        }).catch(() => {
+            notyf.error('Error while deleting the badge')
         })
-    }
+    }, [config])
 
     return (
         <>
