@@ -3,7 +3,6 @@
         <feature>jsp-2.3</feature>
         <feature>cdi-2.0</feature>
         <feature>jdbc-4.2</feature>
-        <feature>jaxrs-2.1</feature>
 
         <!--Enable the following features to run tests with Arquillian managed container-->
         <feature>localConnector-1.0</feature>

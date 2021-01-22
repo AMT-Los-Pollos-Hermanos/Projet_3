@@ -3,7 +3,6 @@ import axios from "axios";
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {notyf} from "../admin";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchConfig} from "../store/config.store";
 import {fetchRules} from "../store/rules.store";
 
 const RuleComponent = () => {

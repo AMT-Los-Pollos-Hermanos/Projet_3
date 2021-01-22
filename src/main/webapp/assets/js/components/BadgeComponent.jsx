@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
-import {API_KEY, API_URL, notyf} from "../admin";
+import {notyf} from "../admin";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchBadges} from "../store/badge.store";
 
