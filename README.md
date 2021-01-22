@@ -21,6 +21,22 @@ docker-compose up
 Aller à l'adresse http://localhost:9080/overflow
 
 
+## Choix d'implémentation
+
+- Structure du projet de gamification en bottom-up complet. Cela nous paraissait plus simple à mettre en place et nous permettais d'avoir plus de contrôle sur le code.
+- Configuration de l'URL et de la clé d'API en variable d'environnement. Cela permet d'avoir une grande fléxibilité dans la modification de ces parametre et simplifie la dockerization des deux projets.
+- Dans le projet 3, la classe `GamificationEngine` (Integration Tier) permet de faire les appels sur l'API. Chaque intéraction de l'utilisateur est envoyé à l'API de gamification à travers cette classe. La facade `GamificationFacade` (Business Tier) permet de récupérer les informations de gamification propre à un utilisateur ou le classement général pour être affiché.
+
+## Tests
+
+Gamification engine :
+
+- Tests BDD (Cucumber)
+
+Overflow :
+- Tests unitaires (JUnit)
+- Tests intégrations (Arquillian)
+- Tests end-to-end (codeceptJS)
 
 ## Specifications
 
