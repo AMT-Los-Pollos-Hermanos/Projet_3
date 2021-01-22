@@ -2,27 +2,23 @@ import React, {useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchBadges} from "../store/badge.store";
 
 const BadgeComponent = () => {
 
-    const [badges, setBadges] = useState([])
+    const badges = useSelector(s => s.badges)
     const badgeName = useRef(null)
     const badgeDescription = useRef(null)
     const badgeIcon = useRef(null)
     const [modal, setModal] = useState(null)
 
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        fetchData()
+        dispatch(fetchBadges())
         setModal(new bs.Modal(document.getElementById('badgeModal')))
     }, [])
-
-    const fetchData = () => {
-        axios.get(API_URL + '/badges', {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        }).then(response => setBadges(response.data))
-    }
 
     const newBadge = () => {
         badgeName.current.value = ''
@@ -56,7 +52,7 @@ const BadgeComponent = () => {
                     }).then(response => {
                         if (response.status === 201) {
                             notyf.success('Badge created')
-                            fetchData()
+                            dispatch(fetchBadges())
                             modal.hide()
                         } else {
                             notyf.error('Error while creating the badge')
@@ -78,7 +74,7 @@ const BadgeComponent = () => {
         }).then(response => {
             if (response.status === 204) {
                 notyf.success('Badge deleted')
-                fetchData()
+                dispatch(fetchBadges())
             } else {
                 notyf.error('Error while deleting the badge')
             }

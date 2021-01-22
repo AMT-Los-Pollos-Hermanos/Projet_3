@@ -3,17 +3,16 @@ import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchPointscales} from "../store/store";
+import {fetchPointscales} from "../store/pointscale.store";
 
 const PointscaleComponent = () => {
 
-    const pointscales = useSelector(s => s)
+    const pointscales = useSelector(s => s.pointscales)
     const dispatch = useDispatch()
     const pointscaleName = useRef(null)
     const [psModal, setPsModal] = useState(null)
 
     useEffect(() => {
-        console.log(pointscales)
         setPsModal(new bs.Modal(document.getElementById('pointscaleModal')))
         dispatch(fetchPointscales())
     }, [])

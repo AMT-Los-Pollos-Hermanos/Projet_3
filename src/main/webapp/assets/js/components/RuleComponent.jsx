@@ -7,8 +7,8 @@ import {useSelector} from "react-redux";
 const RuleComponent = () => {
 
     const [rules, setRules] = useState([])
-    const [badges, setBadges] = useState([])
-    const ps = useSelector(s => s)
+    const badges = useSelector(s => s.badges)
+    const ps = useSelector(s => s.pointscales)
     const [modal, setModal] = useState(null)
 
     const selectedBadgeId = useRef(null)
@@ -32,21 +32,6 @@ const RuleComponent = () => {
                 'X-API-KEY': API_KEY
             }
         }).then(response => setRules(response.data))
-
-        axios.get(API_URL + '/badges', {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        }).then(response => {
-            setBadges(response.data)
-            if (badges.length > 0) {
-                setFormData({
-                    ...formData,
-                    rewardBadgeId: badges[0].id
-                })
-            }
-        })
-
     }, [formData])
 
     const handleChange = (e) => {

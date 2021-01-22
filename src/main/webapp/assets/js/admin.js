@@ -10,22 +10,28 @@ import 'notyf/notyf.min.css'
 import PointscaleComponent from "./components/PointscaleComponent";
 import BadgeComponent from "./components/BadgeComponent";
 import RuleComponent from "./components/RuleComponent";
-import {configureStore} from "@reduxjs/toolkit";
-import store from "./store/store";
+import {combineReducers, configureStore} from "@reduxjs/toolkit";
+import pointscalesReducer from "./store/pointscale.store";
+import badgesReducer from "./store/badge.store";
 import {Provider} from "react-redux";
 
 export const API_URL = 'http://localhost:8080'
 export const API_KEY = '88980fa7-7167-46d5-bbe7-367a204b7bd2'
 export const notyf = new Notyf()
 
-const mainStore = configureStore({
-    reducer: store
+const rootReducer = combineReducers({
+    pointscales: pointscalesReducer,
+    badges: badgesReducer
+})
+
+const rootStore = configureStore({
+    reducer: rootReducer
 })
 
 function App() {
     return (
         <>
-            <Provider store={mainStore}>
+            <Provider store={rootStore}>
                 <div className="row">
                     <div className="col-sm-6">
                         <PointscaleComponent/>
