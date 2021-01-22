@@ -18,6 +18,14 @@ jobs:
         with:
           java-version: 11
 
+      - name: Setup Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies and build front
+        run: yarn install && build build
+
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:

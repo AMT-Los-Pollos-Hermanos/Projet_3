@@ -1,6 +1,5 @@
 package ch.heig.amt.overflow.ui.web.user;
 
-import ch.heig.amt.overflow.application.BusinessException;
 import ch.heig.amt.overflow.application.gamification.GamificationFacade;
 import ch.heig.amt.overflow.application.gamification.UserDTO;
 import ch.heig.amt.overflow.domain.message.FlashMessage;

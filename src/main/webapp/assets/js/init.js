@@ -20,18 +20,6 @@ export function useInit() {
                 notyf.success('Pointscale created')
             }
         })
-        axios.post(API_URL + '/pointscales', {
-            name: 'Secondary ranking'
-        }, {
-            headers: {
-                'X-API-KEY': API_KEY,
-                'Content-Type': 'application/json'
-            }
-        }).then(res => {
-            if (res.status === 201) {
-                notyf.success('Pointscale created')
-            }
-        })
 
         /**
          * Badges

@@ -26,8 +26,8 @@ public class UserDTO {
 
     private String firstName;
 
-//    private List<BadgeDTO> badges;
+    private List<BadgeDTO> badges;
 
-//    private List<UserReceivePointDTO> userReceivePointDTOs;
+    private List<UserReceivePointDTO> userReceivePointDTOs;
 
 }

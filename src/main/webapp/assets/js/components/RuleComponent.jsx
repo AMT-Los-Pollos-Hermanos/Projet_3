@@ -31,7 +31,11 @@ const RuleComponent = () => {
             headers: {
                 'X-API-KEY': API_KEY
             }
-        }).then(response => setRules(response.data))
+        })
+            .then(response => setRules(response.data))
+            .catch(reason => {
+                notyf.error('API unavailable')
+            })
     }, [formData])
 
     const handleChange = (e) => {

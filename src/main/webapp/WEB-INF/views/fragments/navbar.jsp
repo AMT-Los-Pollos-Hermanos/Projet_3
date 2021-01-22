@@ -20,6 +20,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<c:url value="/leaderboard" />">Classement</a>
                 </li>
+                <c:if test="${sessionScope.currentUser.isAdmin}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="<c:url value="/admin" />">Administration</a>
+                    </li>
+                </c:if>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <c:choose>
@@ -30,7 +35,8 @@
                                 <c:out value="${sessionScope.currentUser.firstName} ${sessionScope.currentUser.lastName}"/>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="<c:url value="/profile" />">Profil</a>
+                                <a class="dropdown-item" href="<c:url value="/users/${sessionScope.currentUser.id}" />">Profil</a>
+                                <a class="dropdown-item" href="<c:url value="/profile" />">Paramètres</a>
                                 <a class="dropdown-item" href="<c:url value="/logout.do" />">Déconnexion</a>
                             </div>
                         </li>

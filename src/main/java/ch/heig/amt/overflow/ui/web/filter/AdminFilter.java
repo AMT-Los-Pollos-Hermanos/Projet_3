@@ -18,22 +18,18 @@ public class AdminFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-
-        chain.doFilter(request, response);
-
-//        HttpServletRequest req = (HttpServletRequest) request;
-//        HttpSession session = req.getSession();
-//        UserDTO loggedUser = (UserDTO) session.getAttribute("currentUser");
-//        System.out.println(loggedUser);
-//        if(loggedUser != null && loggedUser.getIsAdmin()) {
-//            chain.doFilter(request, response);
-//        } else {
-//            req.getSession().setAttribute("flash", FlashMessage.builder()
-//                    .message("Vous n'avez pas accès à cette page")
-//                    .type("danger")
-//                    .build());
-//            ((HttpServletResponse) response).sendRedirect(req.getContextPath() + "/");
-//        }
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpSession session = req.getSession();
+        UserDTO loggedUser = (UserDTO) session.getAttribute("currentUser");
+        if(loggedUser != null && loggedUser.getIsAdmin()) {
+            chain.doFilter(request, response);
+        } else {
+            req.getSession().setAttribute("flash", FlashMessage.builder()
+                    .message("Vous n'avez pas accès à cette page")
+                    .type("danger")
+                    .build());
+            ((HttpServletResponse) response).sendRedirect(req.getContextPath() + "/");
+        }
     }
 
 }
