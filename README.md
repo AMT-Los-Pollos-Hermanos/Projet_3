@@ -7,6 +7,21 @@
   <img src="https://img.shields.io/badge/Version-1.0--SNAPSHOT-blue">
 </p>
 
+
+## Installation
+
+```shell script
+git clone --recurse-submodules https://github.com/AMT-Los-Pollos-Hermanos/Projet_3.git
+cd Projet_3/
+docker pull ghcr.io/amt-los-pollos-hermanos/broccoli:latest
+docker pull ghcr.io/amt-los-pollos-hermanos/overflow-gamified:latest
+docker-compose up
+```
+
+Aller à l'adresse http://localhost:9080/overflow
+
+
+
 ## Specifications
 
 ### Pages
@@ -68,17 +83,6 @@ Un formulaire qui demande l'ancien mot de passe utilisateur, le nouveau qui sera
 ### Database
 
 ![](db.png)
-
-## Installation
-
-```shell script
-git clone --recurse-submodules https://github.com/AMT-Los-Pollos-Hermanos/AMT_Projet_1.git
-cd AMT_Projet_1
-docker pull ghcr.io/amt-los-pollos-hermanos/overflow:latest
-docker-compose up
-```
-
-Aller à l'adresse http://localhost:9080/overflow
 
 ## Infrastructure cloud avec Nomad et Consul
 
