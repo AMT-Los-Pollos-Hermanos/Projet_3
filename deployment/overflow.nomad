@@ -40,7 +40,8 @@ CREATE TABLE users
     password   VARCHAR(255),
     email      VARCHAR(255),
     first_name VARCHAR(255),
-    last_name  VARCHAR(255)
+    last_name  VARCHAR(255),
+    is_admin   TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE contents
@@ -113,12 +114,12 @@ CREATE TABLE votes
 SET NAMES utf8;
 
 
-INSERT INTO overflow.users (id, username, password, email, first_name, last_name)
+INSERT INTO overflow.users (id, username, password, email, first_name, last_name, is_admin)
 VALUES ('d2acfbba-13f1-4519-8fe5-0d977b3fffa6', 'gil', '$2a$10$AZRCfWhRDyS05nP7MR98p.UtA6jXjDac/8gkUqusMrJSmIHbYnjSG',
-        'gil.balsiger@heig-vd.ch', 'Gil', 'Balsiger');
-INSERT INTO overflow.users (id, username, password, email, first_name, last_name)
+        'gil.balsiger@heig-vd.ch', 'Gil', 'Balsiger', 1);
+INSERT INTO overflow.users (id, username, password, email, first_name, last_name, is_admin)
 VALUES ('54ce8647-8742-4500-8b2a-ca7eb345da0c', 'julien',
-        '$2a$10$XpbWbJX3ygbBrFsd5z5Qpum.fC.u1eYFgj52fuQ9suCbkH5HjH8WW', 'julien.beguin@heig-vd.ch', 'Julien', 'Béguin');
+        '$2a$10$XpbWbJX3ygbBrFsd5z5Qpum.fC.u1eYFgj52fuQ9suCbkH5HjH8WW', 'julien.beguin@heig-vd.ch', 'Julien', 'Béguin', 1);
 INSERT INTO overflow.users (id, username, password, email, first_name, last_name)
 VALUES ('683d0d88-9ea2-4101-84a7-ccdb5fdad9db', 'chris', '$2a$10$iKxcLBuneprXIZOPEMM1RODetfg0sVevEhBa3YmoDKgT23vIEXL6a',
         'chris.barros@heig-vd.ch', 'Chris', 'Barros');
@@ -191,9 +192,38 @@ EOF
             }
         }
     }
+
+    group "api_db" {
+        network {
+            mode = "bridge"
+        }
+        task "db" {
+            driver = "docker"
+            config {
+                image = "postgres:13"
+            }
+            env {
+                POSTGRES_DB = "broccoli"
+                POSTGRES_USER = "broccoli"
+                POSTGRES_PASSWORD = "broccoli"
+            }
+            resources {
+                cpu = 300
+                memory = 1024
+            }
+        }
+        service {
+            name = "postgres"
+            port = "5432"
+            connect {
+                sidecar_service {}
+            }
+        }
+    }
+
     group "web" {
 
-        count = 3
+        count = 1
 
         network {
             mode = "bridge"
@@ -213,6 +243,9 @@ EOF
                 DB_USER =  "overflow"
                 DB_PASS =  "overflow"
                 DB_PORT =  "${NOMAD_UPSTREAM_PORT_database}"
+                API_HOST = "api"
+                API_PORT = "8080"
+                API_KEY = "88980fa7-7167-46d5-bbe7-367a204b7bd2"
             }
             resources {
                 cpu = 200
@@ -245,6 +278,66 @@ EOF
                         upstreams {
                             destination_name = "database"
                             local_bind_port = 3306
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    group "api" {
+
+        count = 1
+
+        network {
+            mode = "bridge"
+            port "http" {
+                static = 8080
+                to = 8080
+            }
+        }
+        task "api" {
+            driver = "docker"
+            config {
+                image = "ghcr.io/amt-los-pollos-hermanos/overflow-gamified:latest"
+            }
+            env {
+                DATASOURCE_URL = "jdbc:postgresql://${NOMAD_UPSTREAM_IP_postgres}:${NOMAD_UPSTREAM_PORT_postgres}/broccoli"
+                DATASOURCE_USERNAME = "broccoli"
+                DATASOURCE_PASSWORD = "broccoli"
+
+            }
+            resources {
+                cpu = 200
+                memory = 512
+            }
+        }
+        service {
+            name = "overflow"
+            port = "http"
+
+            tags = [
+                "traefik.enable=true",
+                "traefik.http.routers.overflow.rule=PathPrefix(`/overflow`)",
+                "traefik.http.routers.overflow.service=overflow",
+                "traefik.http.services.overflow.loadbalancer.sticky=true",
+                "traefik.http.services.overflow.loadbalancer.sticky.cookie.name=sticky",
+                "traefik.http.services.overflow.loadbalancer.server.port=9080",
+            ]
+
+            check {
+                type     = "http"
+                path     = "/overflow"
+                interval = "2s"
+                timeout  = "2s"
+            }
+
+            connect {
+                sidecar_service {
+                    proxy {
+                        upstreams {
+                            destination_name = "postgres"
+                            local_bind_port = 5432
                         }
                     }
                 }
