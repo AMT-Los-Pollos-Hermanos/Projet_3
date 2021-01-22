@@ -14,6 +14,7 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import pointscalesReducer from "./store/pointscale.store";
 import badgesReducer from "./store/badge.store";
 import {Provider} from "react-redux";
+import {useInit} from "./init";
 
 export const API_URL = 'http://localhost:8080'
 export const API_KEY = '88980fa7-7167-46d5-bbe7-367a204b7bd2'
@@ -24,14 +25,18 @@ const rootReducer = combineReducers({
     badges: badgesReducer
 })
 
-const rootStore = configureStore({
+export const rootStore = configureStore({
     reducer: rootReducer
 })
 
 function App() {
+    const initializeApp = useInit()
     return (
         <>
             <Provider store={rootStore}>
+                <div className="d-flex justify-content-end">
+                    <button className="btn btn-primary btn-lg" onClick={initializeApp}><i className="bi bi-gear"/> Initialize</button>
+                </div>
                 <div className="row">
                     <div className="col-sm-6">
                         <PointscaleComponent/>

@@ -126,7 +126,7 @@ const RuleComponent = () => {
                 badgeImg = (
                     <div>
                         <strong>Badge:</strong><br/>
-                        <img src={badgeFound.icon} style={{maxWidth: '300px', maxHeight: '300px'}} alt=""/>
+                        <img src={badgeFound.icon} style={{maxWidth: '200px', maxHeight: '200px'}} alt=""/>
                     </div>
                 )
             }
