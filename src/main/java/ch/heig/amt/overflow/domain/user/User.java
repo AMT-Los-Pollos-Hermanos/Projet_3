@@ -23,7 +23,9 @@ public class User implements IEntity<User, UserId> {
     private String email;
     private String firstName;
     private String lastName;
-    private Boolean isAdmin;
+
+    @Builder.Default
+    private Boolean isAdmin = false;
 
     @EqualsAndHashCode.Exclude
     private String encryptedPassword;

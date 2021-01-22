@@ -1,4 +1,4 @@
-<h1 align="center">AMT : Project 1 - Overflow</h1>
+<h1 align="center">AMT : Project 3 - Overflow</h1>
 <h3 align="center">Gil Balsiger, Chris Barros, Julien Béguin & Gaëtan Daubresse</h3>
 <p align="center">
   <img src="https://github.com/AMT-Los-Pollos-Hermanos/AMT_Projet_1/workflows/Tests/badge.svg?branch=master">
