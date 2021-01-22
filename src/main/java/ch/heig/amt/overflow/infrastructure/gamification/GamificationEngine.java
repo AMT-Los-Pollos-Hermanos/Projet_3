@@ -21,10 +21,16 @@ import java.net.http.HttpResponse;
 @ApplicationScoped
 public class GamificationEngine implements IGamificationEngine {
 
-    // TODO conf file
-    private final String API_KEY = "88980fa7-7167-46d5-bbe7-367a204b7bd2";
-    private final String API_ENDPOINT = "http://127.0.0.1:8080";
+    private final String API_KEY;
+    private final String API_ENDPOINT;
     private final String AUTH_HEADER_NAME = "X-API-KEY";
+
+    public GamificationEngine() {
+        String apiHost = System.getenv("API_HOST") != null ? System.getenv("API_HOST") : "localhost";
+        String apiPort = System.getenv("API_PORT") != null ? System.getenv("API_PORT") : "8080";
+        API_KEY = System.getenv("API_KEY") != null ? System.getenv("API_KEY") : "88980fa7-7167-46d5-bbe7-367a204b7bd2";
+        API_ENDPOINT = "http://" + apiHost + ":" + apiPort;
+    }
 
     @Override
     public void sendEvent(EventDTO eventDTO) {

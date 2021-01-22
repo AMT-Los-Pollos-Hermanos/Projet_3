@@ -6,7 +6,7 @@ ARG REVISION=SNAPSHOT
 LABEL \
   org.opencontainers.image.authors="Los Pollos Hermanos" \
   org.opencontainers.image.vendor="HEIG" \
-  org.opencontainers.image.source="https://github.com/AMT-Los-Pollos-Hermanos/AMT_Projet_1" \
+  org.opencontainers.image.source="https://github.com/AMT-Los-Pollos-Hermanos/Projet_3" \
   org.opencontainers.image.version="$VERSION" \
   org.opencontainers.image.revision="$REVISION"
 
