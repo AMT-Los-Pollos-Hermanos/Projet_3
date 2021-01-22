@@ -22,7 +22,7 @@ public class ApiEndpoint extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Content-Type", "application/json");
         resp.getWriter().write(new Gson().toJson(ApiConfig.builder()
-                .apiEndpoint(gamificationEngine.getApiEndpoint())
+                .apiEndpoint(gamificationEngine.getApiUrl())
                 .apiKey(gamificationEngine.getApiKey())
                 .build()));
     }

@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "parcel watch --dist-dir ./src/main/webapp/assets/dist --public-url http://localhost:9080/overflow ./src/main/webapp/assets/js/admin.js",
-    "build": "NODE_ENV=production parcel build --dist-dir ./src/main/webapp/assets/dist --public-url http://localhost:9080/overflow ./src/main/webapp/assets/js/admin.js",
+    "build": "NODE_ENV=production parcel build --no-source-maps --dist-dir ./src/main/webapp/assets/dist ./src/main/webapp/assets/js/admin.js",
     "clean": "rm -rf ./src/main/webapp/assets/dist .cache .parcel-cache"
   },
   "devDependencies": {

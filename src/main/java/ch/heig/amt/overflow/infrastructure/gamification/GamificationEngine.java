@@ -23,6 +23,7 @@ public class GamificationEngine implements IGamificationEngine {
 
     private final String API_KEY;
     private final String API_ENDPOINT;
+    private final String API_URL;
     private final String AUTH_HEADER_NAME = "X-API-KEY";
 
     public GamificationEngine() {
@@ -30,6 +31,7 @@ public class GamificationEngine implements IGamificationEngine {
         String apiPort = System.getenv("API_PORT") != null ? System.getenv("API_PORT") : "8080";
         API_KEY = System.getenv("API_KEY") != null ? System.getenv("API_KEY") : "88980fa7-7167-46d5-bbe7-367a204b7bd2";
         API_ENDPOINT = "http://" + apiHost + ":" + apiPort;
+        API_URL = System.getenv("API_URL") != null ? System.getenv("API_URL") : "http://localhost:8080";
     }
 
     public String getApiKey() {
@@ -38,6 +40,10 @@ public class GamificationEngine implements IGamificationEngine {
 
     public String getApiEndpoint() {
         return API_ENDPOINT;
+    }
+
+    public String getApiUrl() {
+        return API_URL;
     }
 
     @Override

@@ -72,7 +72,7 @@ public class JdbcUserRepository implements IUserRepository {
                 create.setString(i++, entity.getEncryptedPassword());
                 create.setString(i++, entity.getEmail());
                 create.setString(i++, entity.getFirstName());
-                create.setString(i, entity.getLastName());
+                create.setString(i++, entity.getLastName());
                 create.setBoolean(i, entity.getIsAdmin());
                 int rows = create.executeUpdate();
                 if (rows == 0) {

@@ -99,7 +99,7 @@ const RuleComponent = () => {
                 notyf.error('Error while creating the rule')
             }
         })
-    }, [config])
+    }, [formData, config])
 
     const handleChange = (e) => {
         const target = e.target
