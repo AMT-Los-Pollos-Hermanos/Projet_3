@@ -71,6 +71,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/amt-los-pollos-hermanos/overflow:latest
-          cache-from: type=ghcr.io,ref=amt-los-pollos-hermanos/overflow:latest
+          tags: ghcr.io/amt-los-pollos-hermanos/overflow-gamified:latest
+          cache-from: type=ghcr.io,ref=amt-los-pollos-hermanos/overflow-gamified:latest
           cache-to: type=inline
