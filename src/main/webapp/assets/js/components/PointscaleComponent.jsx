@@ -2,25 +2,21 @@ import React, {useEffect, useRef, useState} from 'react'
 import axios from 'axios'
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchPointscales} from "../store/store";
 
 const PointscaleComponent = () => {
 
-    const [pointscales, setPointscales] = useState([])
+    const pointscales = useSelector(s => s)
+    const dispatch = useDispatch()
     const pointscaleName = useRef(null)
     const [psModal, setPsModal] = useState(null)
 
     useEffect(() => {
-        fetchData()
+        console.log(pointscales)
         setPsModal(new bs.Modal(document.getElementById('pointscaleModal')))
+        dispatch(fetchPointscales())
     }, [])
-
-    const fetchData = () => {
-        axios.get(API_URL + '/pointscales', {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        }).then(response => setPointscales(response.data))
-    }
 
     const newPointscale = () => {
         pointscaleName.current.value = ''
@@ -41,7 +37,7 @@ const PointscaleComponent = () => {
             }).then(response => {
                 if (response.status === 201) {
                     notyf.success('Pointscale created')
-                    fetchData()
+                    dispatch(fetchPointscales())
                     psModal.hide()
                 } else {
                     notyf.error('Error while creating the pointscale')
@@ -59,7 +55,7 @@ const PointscaleComponent = () => {
         }).then(response => {
             if (response.status === 204) {
                 notyf.success('Pointscale deleted')
-                fetchData()
+                dispatch(fetchPointscales())
                 psModal.hide()
             } else {
                 notyf.error('Error while deleting the pointscale')

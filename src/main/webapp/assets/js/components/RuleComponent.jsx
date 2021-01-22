@@ -2,12 +2,13 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import axios from "axios";
 import * as bs from 'bootstrap/dist/js/bootstrap.bundle.min'
 import {API_KEY, API_URL, notyf} from "../admin";
+import {useSelector} from "react-redux";
 
 const RuleComponent = () => {
 
     const [rules, setRules] = useState([])
     const [badges, setBadges] = useState([])
-    const [ps, setPs] = useState([])
+    const ps = useSelector(s => s)
     const [modal, setModal] = useState(null)
 
     const selectedBadgeId = useRef(null)
@@ -46,19 +47,6 @@ const RuleComponent = () => {
             }
         })
 
-        axios.get(API_URL + '/pointscales', {
-            headers: {
-                'X-API-KEY': API_KEY
-            }
-        }).then(response => {
-            setPs(response.data)
-            if (ps.length > 0) {
-                setFormData({
-                    ...formData,
-                    rewardPointscaleId: ps[0].id
-                })
-            }
-        })
     }, [formData])
 
     const handleChange = (e) => {
