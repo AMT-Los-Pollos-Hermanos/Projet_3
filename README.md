@@ -19,6 +19,7 @@ docker-compose up
 ```
 
 Allez à l'adresse http://localhost:9080/overflow.
+
 Pour accéder à l'interface d'administration, il faut utiliser un des comptes admin suivant : `gil:gil` ou `julien:julien`
 
 ## Choix d'implémentation
@@ -26,7 +27,7 @@ Pour accéder à l'interface d'administration, il faut utiliser un des comptes a
 - Structure du projet de gamification en bottom-up complet. Cela nous paraissait plus simple à mettre en place et nous permettais d'avoir plus de contrôle sur le code.
 - Configuration de l'URL et de la clé d'API en variable d'environnement. Cela permet d'avoir une grande fléxibilité dans la modification de ces parametre et simplifie la dockerization des deux projets.
 - Dans le projet Overflow, la classe `GamificationEngine` (Integration Tier) permet de faire les appels sur l'API. Chaque intéraction de l'utilisateur est envoyé à l'API de gamification à travers cette classe. La facade `GamificationFacade` (Business Tier) permet de récupérer les informations de gamification propre à un utilisateur ou le classement général pour être affiché.
-- Implémentation d'une interface d'administration dans le projet Overflow pour configurer les règles, badges et échelles de points sur l'API de gamification. Un bonton *Initialize* permet de définir des badges et échelles par défaut.
+- Implémentation d'une interface d'administration dans le projet Overflow pour configurer les règles, badges et échelles de points sur l'API de gamification. Un bouton *Initialize* permet de définir des badges et échelles par défaut.
 
 ## Tests
 
