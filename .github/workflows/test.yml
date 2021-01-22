@@ -29,7 +29,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     name: End-to-end tests with CodeceptJS
-
     steps:
       - uses: actions/checkout@v2
 
