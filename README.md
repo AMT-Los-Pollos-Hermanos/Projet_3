@@ -7,6 +7,39 @@
   <img src="https://img.shields.io/badge/Version-1.0--SNAPSHOT-blue">
 </p>
 
+
+## Installation
+
+```shell script
+git clone --recurse-submodules https://github.com/AMT-Los-Pollos-Hermanos/Projet_3.git
+cd Projet_3/
+docker pull ghcr.io/amt-los-pollos-hermanos/broccoli:latest
+docker pull ghcr.io/amt-los-pollos-hermanos/overflow-gamified:latest
+docker-compose up
+```
+
+Allez à l'adresse http://localhost:9080/overflow.
+
+Pour accéder à l'interface d'administration, il faut utiliser un des comptes admin suivant : `gil:gil` ou `julien:julien`
+
+## Choix d'implémentation
+
+- Structure du projet de gamification en bottom-up complet. Cela nous paraissait plus simple à mettre en place et nous permettais d'avoir plus de contrôle sur le code.
+- Configuration de l'URL et de la clé d'API en variable d'environnement. Cela permet d'avoir une grande fléxibilité dans la modification de ces parametre et simplifie la dockerization des deux projets.
+- Dans le projet Overflow, la classe `GamificationEngine` (Integration Tier) permet de faire les appels sur l'API. Chaque intéraction de l'utilisateur est envoyé à l'API de gamification à travers cette classe. La facade `GamificationFacade` (Business Tier) permet de récupérer les informations de gamification propre à un utilisateur ou le classement général pour être affiché.
+- Implémentation d'une interface d'administration dans le projet Overflow pour configurer les règles, badges et échelles de points sur l'API de gamification. Un bouton *Initialize* permet de définir des badges et échelles par défaut.
+
+## Tests
+
+Gamification engine :
+
+- Tests BDD (Cucumber)
+
+Overflow :
+- Tests unitaires (JUnit)
+- Tests intégrations (Arquillian)
+- Tests end-to-end (codeceptJS)
+
 ## Specifications
 
 ### Pages
@@ -68,17 +101,6 @@ Un formulaire qui demande l'ancien mot de passe utilisateur, le nouveau qui sera
 ### Database
 
 ![](db.png)
-
-## Installation
-
-```shell script
-git clone --recurse-submodules https://github.com/AMT-Los-Pollos-Hermanos/AMT_Projet_1.git
-cd AMT_Projet_1
-docker pull ghcr.io/amt-los-pollos-hermanos/overflow:latest
-docker-compose up
-```
-
-Aller à l'adresse http://localhost:9080/overflow
 
 ## Infrastructure cloud avec Nomad et Consul
 
